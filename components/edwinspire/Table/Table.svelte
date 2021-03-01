@@ -3,7 +3,6 @@
   import { onDestroy } from "svelte";
   import TableCell from "./TableCell";
   import { FetchData } from ".././FetchData.js";
-  //  import  SortColumn from "./Sort.js";
 
   const dispatch = createEventDispatcher();
   let DataTable = [];

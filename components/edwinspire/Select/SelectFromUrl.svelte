@@ -1,5 +1,5 @@
 <script>
-  import { FetchData } from "./FetchData.js";
+  import { FetchData } from "../FetchData.js";
   import { createEventDispatcher } from "svelte";
   export let url;
   export let query;
