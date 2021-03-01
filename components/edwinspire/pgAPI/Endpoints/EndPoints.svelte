@@ -1,5 +1,5 @@
 <script>
-  import { FetchData } from "../../FetchData.js";
+  import { FetchData } from "@edwinspire/fetch/FetchData.js";
   import Table from "../../Table/Table";
   import EndpointForm from "./EndpointForm";
   import MethodForm from "./MethodForm";

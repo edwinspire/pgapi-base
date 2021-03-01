@@ -1,5 +1,5 @@
 <script>
-  import { FetchData } from "../../FetchData.js";
+    import { FetchData } from "@edwinspire/fetch/FetchData.js";
   import MessageD from "./ModalMessage.svelte";
   export let Method;
   export let Show = false;

@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import { onDestroy } from "svelte";
   import TableCell from "./TableCell";
-  import { FetchData } from ".././FetchData.js";
+  import { FetchData } from "@edwinspire/fetch/FetchData.js";
 
   const dispatch = createEventDispatcher();
   let DataTable = [];
