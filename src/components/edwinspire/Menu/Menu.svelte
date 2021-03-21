@@ -78,7 +78,7 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-light" href="/"> Logout </a>
+            <a class="button is-light" href="/pgapi/signout"> Logout </a>
           </div>
         </div>
       </div>
