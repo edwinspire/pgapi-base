@@ -1,0 +1,20 @@
+{
+  "bundler": "webpack",
+  "shimport": null,
+  "assets": {
+    "about": "3e7e495cdf883dc58f8c/about.about.js",
+    "home": "3e7e495cdf883dc58f8c/home.home.js",
+    "index": "3e7e495cdf883dc58f8c/index.index.js",
+    "main": "3e7e495cdf883dc58f8c/main.js",
+    "pgAPI": "3e7e495cdf883dc58f8c/pgAPI.pgAPI.js",
+    "vendors~pgAPI": "3e7e495cdf883dc58f8c/vendors~pgAPI.vendors~pgAPI.js"
+  },
+  "css": {
+    "chunks": {
+      "index.svelte": [],
+      "about.svelte": [],
+      "pgAPI/index.svelte": [],
+      "home/index.svelte": []
+    }
+  }
+}
