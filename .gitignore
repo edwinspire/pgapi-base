@@ -106,4 +106,4 @@ dist
 node_modules/
 
 # Permite NO ignorar la carpeta de modulos de svelt
-src/node_modules/
+!src/node_modules/
