@@ -2,14 +2,14 @@
 require("dotenv").config({ override: true });
 //const fn_set_expired_lifetime = require("@tasks/fn_set_expired_lifetime");
 //const fn_sendemail = require("@tasks/fn_sendemail");
-const { pgWebPush } = require("@app_express_routes/webpush.js");
+const { pgWebPush } = require("@edwinspire/express-pgapi/webpush");
 const cluster = require("cluster");
 
 //import * as sio from "socket.io";
 import * as sapper from "@sapper/server";
 import sirv from "sirv";
 import compression from "compression";
-import virtual_route from "@app_express_routes/routes";
+import virtual_route from "@edwinspire/express-pgapi/routes";
 import fs from "fs";
 
 
