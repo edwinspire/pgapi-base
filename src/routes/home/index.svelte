@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { FetchData } from "@edwinspire/fetch/FetchData.js";
   import Menu from "../../components/edwinspire/Menu/Menu.svelte";
-  import TelegramFile from "../../components/omab/TelegramFile.svelte";
 
   let FData = new FetchData();
 
@@ -30,9 +29,7 @@
   <div class="columns is-multiline">
     {#each items as item}
       <div class="column is-4-desktop">
-        <TelegramFile
-          idfile={item.idfile}
-        />
+
       </div>
     {/each}
   </div>
