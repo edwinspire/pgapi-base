@@ -12,7 +12,7 @@
   }
 
   async function SaveEndPoint() {
-    console.log(EndPoint);
+    console.log('Endpoint', EndPoint);
     loading = true;
     let dataEndpoint;
     try {

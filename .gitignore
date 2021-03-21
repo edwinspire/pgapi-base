@@ -101,3 +101,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Ignora mode_modules
+node_modules/
+
+# Permite NO ignorar la carpeta de modulos de svelt
+src/node_modules/
