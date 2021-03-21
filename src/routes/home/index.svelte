@@ -4,7 +4,10 @@
   import Menu from "../../components/edwinspire/Menu/Menu.svelte";
 
   let FData = new FetchData();
+  let promise = new Promise((resolve, reject) => {
 
+    resolve();
+});
 
   async function fetchData() {
     const res = await FData.get("/pgapi/omab/files", {}, {
@@ -19,11 +22,14 @@
     }
   }
 
-  onMount(async () => {});
+  onMount(async () => {
+promise = await fetchData();
+
+  });
 </script>
 
 <Menu />
-{#await fetchData()}
+{#await promise}
   <p>Buscando productos...</p>
 {:then items}
   <div class="columns is-multiline">

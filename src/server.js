@@ -1,7 +1,7 @@
+const passport = require('passport');
+const flash = require('connect-flash');
 //-- No tiene WebSocket funcional por usar Cluster --//
 require("dotenv").config({ override: true });
-//const fn_set_expired_lifetime = require("@tasks/fn_set_expired_lifetime");
-//const fn_sendemail = require("@tasks/fn_sendemail");
 const { pgWebPush } = require("@edwinspire/express-pgapi/webpush");
 const cluster = require("cluster");
 
@@ -13,8 +13,6 @@ import virtual_route from "@edwinspire/express-pgapi/routes";
 import fs from "fs";
 
 
-var ExpiredEventsRunning = false;
-var SendEmailRunning = false;
 global.fecha = new Date();
 var ListSockets = [];
 
@@ -25,10 +23,11 @@ var certificate = fs.readFileSync("./certs/selfsigned.crt", "utf8");
 var credentials = { key: privateKey, cert: certificate, requestCert: false };
 
 const express = require("express");
+const session = require("express-session");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 
-const { PORT, NODE_ENV } = process.env;
+const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
 const dev = NODE_ENV === "development";
 //process.env.LOCAL_SERVER = true;
 
@@ -90,8 +89,19 @@ if (cluster.isMaster) {
   app.use(morgan("dev"));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json({ strict: false, limit: 50000000 })); //-- Limit 50M
-  app.use(cookieParser());
+  app.use(cookieParser(TOKEN_ENCRYPT));
   app.use(compression());
+  app.use(session({
+    secret: TOKEN_ENCRYPT,
+   resave: true,
+   saveUninitialized: true 
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(flash());
+  
+  require('@edwinspire/express-pgapi/passport.js');
+
   app.use(virtual_route);
   app.use(
     compression({ threshold: 0 }),
