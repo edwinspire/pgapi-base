@@ -35,7 +35,6 @@ const dev = NODE_ENV === "development";
 
 // Esto es para que se ejecute solo en el master y no en los workers
 if (cluster.isMaster) {
-  require("@telegraf/telegraf.js");
 
   new pgWebPush();
 
