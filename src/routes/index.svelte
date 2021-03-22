@@ -1,4 +1,5 @@
 <script>
+  	import { onMount } from 'svelte';
   import { FetchData } from "@edwinspire/fetch/FetchData.js";
 
   let username = "";
@@ -16,11 +17,12 @@
   }
 
   async function Login(event) {
-    let response = await FData.post(
+    if(username && password && username.length > 0 && password.length > 0){
+
+      let response = await FData.post(
       "/pgapi/signin",
       { user: username, pwd: password }
     );
-    console.log(await response);
     
     let data = await response.json();
     //console.log(data);
@@ -30,7 +32,33 @@
       window.location.href = "/home";
     }
 
+    }else{
+      alert('Debe llenar los campos de usuario y clave');
+    }
   }
+
+  onMount(async () => {
+		username = "";
+
+// Borra todas las cookies de la aplicación
+(function () {
+    var cookies = document.cookie.split("; ");
+    for (var c = 0; c < cookies.length; c++) {
+        var d = window.location.hostname.split(".");
+        while (d.length > 0) {
+            var cookieBase = encodeURIComponent(cookies[c].split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+            var p = location.pathname.split('/');
+            document.cookie = cookieBase + '/';
+            while (p.length > 0) {
+                document.cookie = cookieBase + p.join('/');
+                p.pop();
+            };
+            d.shift();
+        }
+    }
+})();
+
+	});
 </script>
 
 <div class="root">

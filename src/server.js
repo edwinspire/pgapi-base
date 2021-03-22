@@ -85,29 +85,39 @@ if (cluster.isMaster) {
     cluster.fork();
   }
 } else {
+
   const app = express(); //instancia de express
   app.use(morgan("dev"));
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json({ strict: false, limit: 50000000 })); //-- Limit 50M
   app.use(cookieParser(TOKEN_ENCRYPT));
-  app.use(compression());
+  app.use(express.json({ strict: false, limit: 50000000 })); //-- Limit 50M
+  app.use(express.urlencoded({ extended: true }));
+
   app.use(session({
     secret: TOKEN_ENCRYPT,
    resave: true,
-   saveUninitialized: true 
+   saveUninitialized: true,
+   cookie: {
+    maxAge: 2 * 60 * 60 * 1000, // 1 hour
+    httpOnly: true,
+    //secure: false, // Uncomment this line to enforce HTTPS protocol.
+    sameSite: true,
+  },
   }));
   app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(flash());
-  
+//  app.use(passport.session());
+
   require('@edwinspire/express-pgapi/passport.js');
 
+  app.use(flash());
   app.use(virtual_route);
+
   app.use(
     compression({ threshold: 0 }),
     sirv("static", { dev }),
     sapper.middleware()
   );
+
+
 
   console.log(process.env.LOCAL_SERVER, process.env.DATABASE_URL);
 

@@ -72,7 +72,7 @@
         <a href="/registro_depositos" class="navbar-item">Registro de Depósitos</a>
   
         
-        <a href="/facturacion_electronica"  class="navbar-item">Facturación Electrónica</a>
+        <a href="/pgapi/test"  class="navbar-item">Test Session</a>
       </div>
   
       <div class="navbar-end">
