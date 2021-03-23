@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const flash = require('connect-flash');
 //-- No tiene WebSocket funcional por usar Cluster --//
@@ -114,7 +115,21 @@ if (cluster.isMaster) {
   app.use(
     compression({ threshold: 0 }),
     sirv("static", { dev }),
-    sapper.middleware()
+    sapper.middleware({
+			// customize the session
+			session: (req, res) => {
+        
+        let toke_user = req.cookies['TOKEN_USER'];
+        let user;
+        try {
+            user = jwt.verify(toke_user, TOKEN_ENCRYPT);
+        } catch (err) {
+            console.error(err.message, toke_user);
+          //  user = err.message;
+        }
+       return {user: user, token: toke_user, cookies: req.cookies}
+      }
+		})
   );
 
 
