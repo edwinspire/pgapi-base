@@ -3,6 +3,7 @@
   import { FetchData } from "@edwinspire/fetch/FetchData.js";
   import Menu from "../../components/edwinspire/Menu/Menu.svelte";
   import Session from "../../components/edwinspire/Session/Required.svelte";
+  import {CurrentUser} from "../../components/edwinspire/Session/Store.js";
 
   let FData = new FetchData();
   let promise = new Promise((resolve, reject) => {
@@ -27,6 +28,7 @@
   }
 
   onMount(async () => {
+    console.log($CurrentUser);
     promise = await fetchData();
   });
 </script>

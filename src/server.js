@@ -1,18 +1,19 @@
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const flash = require('connect-flash');
 //-- No tiene WebSocket funcional por usar Cluster --//
 require("dotenv").config({ override: true });
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+const flash = require("connect-flash");
 const { pgWebPush } = require("@edwinspire/express-pgapi/webpush");
+//const { createConnection } = require("@edwinspire/tokens/lowdb");
 const cluster = require("cluster");
 
 //import * as sio from "socket.io";
 import * as sapper from "@sapper/server";
 import sirv from "sirv";
 import compression from "compression";
-import virtual_route from "@edwinspire/express-pgapi/routes";
+import pgAccessPoint from "@edwinspire/express-pgapi/pgAccessPoint";
+import GeneralRoutes from "@express-routes/routes";
 import fs from "fs";
-
 
 global.fecha = new Date();
 var ListSockets = [];
@@ -32,49 +33,10 @@ const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
 const dev = NODE_ENV === "development";
 //process.env.LOCAL_SERVER = true;
 
-
 // Esto es para que se ejecute solo en el master y no en los workers
 if (cluster.isMaster) {
-
   new pgWebPush();
-
-  /*
-  setInterval(() => {
-    if (!SendEmailRunning) {
-      SendEmailRunning = true;
-      fn_sendemail()
-        .then((ret) => {
-          console.log("fn_sendemail End", ret);
-          SendEmailRunning = false;
-        })
-        .catch((e) => {
-          console.log("fn_sendemail Error", e);
-          SendEmailRunning = false;
-        });
-    } else {
-      console.log("fn_sendemail Running...");
-    }
-  }, 1000 * 300);
-*/
-
-  setInterval(() => {
-    /*
-    if (!ExpiredEventsRunning) {
-      ExpiredEventsRunning = true;
-      fn_set_expired_lifetime()
-        .then((ret) => {
-          console.log("ExpiredEvents Running", ret);
-          ExpiredEventsRunning = false;
-        })
-        .catch((e) => {
-          console.log("ExpiredEvents Running Error", e);
-          ExpiredEventsRunning = false;
-        });
-    } else {
-      console.log("ExpiredEvents Running...");
-    }
-    */
-  }, 300 * 1000);
+  //createConnection();
 }
 
 if (cluster.isMaster) {
@@ -83,56 +45,55 @@ if (cluster.isMaster) {
 
   // Create a worker for each CPU
   for (var i = 0; i < cpuCount; i += 1) {
-    cluster.fork();
+    let worker = cluster.fork();
   }
 } else {
-
   const app = express(); //instancia de express
   app.use(morgan("dev"));
   app.use(cookieParser(TOKEN_ENCRYPT));
   app.use(express.json({ strict: false, limit: 50000000 })); //-- Limit 50M
   app.use(express.urlencoded({ extended: true }));
 
-  app.use(session({
-    secret: TOKEN_ENCRYPT,
-   resave: true,
-   saveUninitialized: true,
-   cookie: {
-    maxAge: 2 * 60 * 60 * 1000, // 1 hour
-    httpOnly: true,
-    //secure: false, // Uncomment this line to enforce HTTPS protocol.
-    sameSite: true,
-  },
-  }));
+  app.use(
+    session({
+      secret: TOKEN_ENCRYPT,
+      resave: true,
+      saveUninitialized: true,
+      cookie: {
+        maxAge: 2 * 60 * 60 * 1000, // 1 hour
+        httpOnly: true,
+        //secure: false, // Uncomment this line to enforce HTTPS protocol.
+        sameSite: true,
+      },
+    })
+  );
   app.use(passport.initialize());
-//  app.use(passport.session());
+  //  app.use(passport.session());
 
-  require('@edwinspire/express-pgapi/passport.js');
+  require("@edwinspire/express-pgapi/passport_pg");
 
   app.use(flash());
-  app.use(virtual_route);
+  app.use(GeneralRoutes);
+  app.use(pgAccessPoint);
 
   app.use(
     compression({ threshold: 0 }),
     sirv("static", { dev }),
     sapper.middleware({
-			// customize the session
-			session: (req, res) => {
-        
-        let toke_user = req.cookies['TOKEN_USER'];
+      // customize the session
+      session: (req, res) => {
+        let toke_user = req.cookies["TOKEN_USER"];
         let user;
         try {
-            user = jwt.verify(toke_user, TOKEN_ENCRYPT);
+          user = jwt.verify(toke_user, TOKEN_ENCRYPT);
         } catch (err) {
-            console.error(err.message, toke_user);
+          console.error(err.message, toke_user);
           //  user = err.message;
         }
-       return {user: user, token: toke_user, cookies: req.cookies}
-      }
-		})
+        return { user: user, token: toke_user, cookies: req.cookies };
+      },
+    })
   );
-
-
 
   console.log(process.env.LOCAL_SERVER, process.env.DATABASE_URL);
 
@@ -140,16 +101,14 @@ if (cluster.isMaster) {
 
   if (!process.env.LOCAL_SERVER) {
     httpServer = require("http").createServer(app);
-    console.log('Usando HTTP');
-    
+    console.log("Usando HTTP");
   } else {
     httpServer = require("https").createServer(credentials, app);
-    console.log('Usando HTTPS');
+    console.log("Usando HTTPS");
   }
 
   let io = require("socket.io")(httpServer);
 
-  
   /*
   io.use((socket, next) => {
     console.log(socket);
@@ -186,6 +145,5 @@ cluster.on("exit", function (worker) {
   console.log("Worker %d died :(", worker.id);
   cluster.fork();
 });
-
 
 //Formato de mensajes que se deben enviar desde ESP32 42["chat",{"id": "67", "name": "p"}]

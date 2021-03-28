@@ -1,8 +1,9 @@
 <script>
   import { goto } from "@sapper/app";
   import { onMount } from "svelte/internal";
+  import { CurrentUser } from "./Store.js";
   const jwt = require("jsonwebtoken");
-  let Show = false;
+  let Authorized = true;
   function getCookie(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
@@ -22,23 +23,38 @@
   onMount(() => {
     var decoded = jwt.decode(getCookie("TOKEN_USER"), { complete: false });
 
-    console.log(decoded);
-
+    //console.log(decoded);
+    CurrentUser.set(decoded);
     if (decoded && new Date() < new Date(decoded.exp * 1000)) {
-      console.log(
-        "ok",
-        new Date(decoded.exp * 1000),
-        new Date(decoded.iat * 1000)
-      );
-      Show = true;
+      Authorized = true;
     } else {
-      goto("/");
+      Authorized = false;
+      setTimeout(() => {
+        goto("/");
+      }, 5000);
     }
   });
 </script>
 
 <div>
-  {#if Show}
+  {#if Authorized}
     <slot />
+  {:else}
+    <div class="MainContainer">
+      <div>
+        <p class="has-text-centered title is-1">
+          <span class="icon is-large">
+            <i class="fas fa-2x fa-user-lock" />
+          </span>
+        </p>
+        <p class="has-text-centered my-5 subtitle is-3">ACCESO NO AUTORIZADO</p>
+      </div>
+    </div>
   {/if}
 </div>
+
+<style>
+  .MainContainer {
+    padding: 3em;
+  }
+</style>

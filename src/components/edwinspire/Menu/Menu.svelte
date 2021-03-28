@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-  
+    import {CurrentUser} from "../Session/Store.js";  
     let NavOnLine = false;
     let MenuOpen = false;
   
@@ -12,6 +12,8 @@
   
     onMount(async () => {  
   
+      console.log($CurrentUser);
+
       NavOnLine = window.navigator.onLine;
       console.log(NavOnLine, navigator);
   
@@ -27,7 +29,7 @@
     });
   </script>
   
-  <nav class="navbar" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item" href="/home">
         <span class="icon">
@@ -69,7 +71,7 @@
   
     <div class="navbar-menu" class:is-active={MenuOpen}>
       <div class="navbar-start">
-        <a href="/registro_depositos" class="navbar-item">Registro de Depósitos</a>
+        <a href="/pgAPI" class="navbar-item">pgAPI</a>
   
         
         <a href="/pgapi/test"  class="navbar-item">Test Session</a>
@@ -78,7 +80,13 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-light" href="/pgapi/signout"> Logout </a>
+            <!-- svelte-ignore a11y-missing-attribute -->
+            <a class="button is-light" > {$CurrentUser.username} </a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-light" href="/signout"> Logout </a>
           </div>
         </div>
       </div>

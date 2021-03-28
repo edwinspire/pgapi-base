@@ -19,7 +19,7 @@
 
   async function Login(event) {
     if (username && password && username.length > 0 && password.length > 0) {
-      let response = await FData.post("/pgapi/signin", {
+      let response = await FData.post("/signin", {
         user: username,
         pwd: password,
       });
@@ -70,7 +70,7 @@
         <h1>Login</h1>
         <form
           class="form"
-          action="/pgapi/signin"
+          action="/signin"
           method="post"
           on:submit|preventDefault={Login}
         >

@@ -2,14 +2,15 @@
   "bundler": "webpack",
   "shimport": null,
   "assets": {
-    "about": "d9c5cfd99973ab7d3aa6/about.about.js",
-    "home": "d9c5cfd99973ab7d3aa6/home.home.js",
-    "home2": "d9c5cfd99973ab7d3aa6/home2.home2.js",
-    "index": "d9c5cfd99973ab7d3aa6/index.index.js",
-    "main": "d9c5cfd99973ab7d3aa6/main.js",
-    "pgAPI": "d9c5cfd99973ab7d3aa6/pgAPI.pgAPI.js",
-    "vendors~home~home2": "d9c5cfd99973ab7d3aa6/vendors~home~home2.vendors~home~home2.js",
-    "vendors~pgAPI": "d9c5cfd99973ab7d3aa6/vendors~pgAPI.vendors~pgAPI.js"
+    "about": "80a15ead6bec3db809df/about.about.js",
+    "home": "80a15ead6bec3db809df/home.home.js",
+    "home2": "80a15ead6bec3db809df/home2.home2.js",
+    "home~home2~pgAPI": "80a15ead6bec3db809df/home~home2~pgAPI.home~home2~pgAPI.js",
+    "index": "80a15ead6bec3db809df/index.index.js",
+    "main": "80a15ead6bec3db809df/main.js",
+    "pgAPI": "80a15ead6bec3db809df/pgAPI.pgAPI.js",
+    "vendors~home~home2~pgAPI": "80a15ead6bec3db809df/vendors~home~home2~pgAPI.vendors~home~home2~pgAPI.js",
+    "vendors~pgAPI": "80a15ead6bec3db809df/vendors~pgAPI.vendors~pgAPI.js"
   },
   "css": {
     "chunks": {

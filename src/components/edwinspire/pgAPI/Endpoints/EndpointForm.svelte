@@ -5,7 +5,7 @@
   export let Show = false;
   let loading = false;
 
-  let FData = new FetchData();
+  let FData = new FetchData('/');
 
   $: {
     console.log({ Show });

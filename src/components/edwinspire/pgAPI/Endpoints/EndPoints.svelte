@@ -4,7 +4,7 @@
   import EndpointForm from "./EndpointForm";
   import MethodForm from "./MethodForm";
 
-  let FData = new FetchData();
+  let FData = new FetchData('/');
 
   /////////////////////////////////
   //// ENDPOINT ////
