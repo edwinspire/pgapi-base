@@ -29,22 +29,11 @@
 
   onMount(async () => {
     console.log($CurrentUser);
-    promise = await fetchData();
+    //promise =  fetchData();
   });
 </script>
 <Session>
 
 <Menu />
-{#await promise}
-  <p>Buscando productos...</p>
-{:then items}
-  <div class="columns is-multiline">
-    {#each items as item}
-      <div class="column is-4-desktop" />
-    {/each}
-  </div>
-{:catch error}
-  <p style="color: red">{error.message}</p>
-{/await}
-
+<div>Hola</div>
 </Session>

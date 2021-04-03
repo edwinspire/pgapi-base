@@ -5,7 +5,7 @@
 
   let username = "";
   let password = "";
-  let FData = new FetchData();
+  let FData;
 
   async function digestMessage(message) {
     const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
@@ -19,7 +19,7 @@
 
   async function Login(event) {
     if (username && password && username.length > 0 && password.length > 0) {
-      let response = await FData.post("/signin", {
+      let response = await FData.post("/login", {
         user: username,
         pwd: password,
       });
@@ -36,9 +36,8 @@
     }
   }
 
-  onMount(async () => {
-    username = "";
-
+  onMount( () => {
+  FData = new FetchData();
     // Borra todas las cookies de la aplicación
     (function () {
       var cookies = document.cookie.split("; ");

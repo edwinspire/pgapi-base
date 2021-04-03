@@ -1,13 +1,13 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import TableCell from "./TableCell";
   import { FetchData } from "@edwinspire/fetch/FetchData.js";
 
   const dispatch = createEventDispatcher();
   let DataTable = [];
   let RawDataTable = [];
-  let FData = new FetchData();
+  let FData;
   let text_search;
   let loading = true;
   let showEdit = false;
@@ -25,8 +25,13 @@
 
   $: {
     console.log({ params });
-    GetDataTable();
+//    GetDataTable();
   }
+
+onMount(()=>{
+  FData = new FetchData();
+  GetDataTable();
+})
 
   let auto_refresh = setInterval(() => {
     GetDataTable();
@@ -106,7 +111,7 @@
 
     let LinesCSV = "";
 
-    console.log(DataExport);
+    //console.log(DataExport);
     let header = Object.keys(DataExport[0]).map((item) => {
       if (columns[item] && columns[item].label) {
         return '"' + columns[item].label + '"';
@@ -209,7 +214,8 @@
   }
 
   async function GetDataTable() {
-    try {
+    if(FData){
+      try {
       loading = true;
       const res = await FData.get(url, params, {
         "Content-Type": "application/json",
@@ -236,6 +242,9 @@
       loading = false;
       //item.Articulos = JSON.stringify(err);
       console.warn(err);
+    }
+    }else{
+      console.warn('FDada no ha sido inicializada');
     }
   }
 </script>

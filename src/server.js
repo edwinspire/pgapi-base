@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const flash = require("connect-flash");
 const { pgWebPush } = require("@edwinspire/express-pgapi/webpush");
-//const { createConnection } = require("@edwinspire/tokens/lowdb");
+const { Token } = require("@edwinspire/tokens/tokendb");
 const cluster = require("cluster");
 
 //import * as sio from "socket.io";
@@ -16,6 +16,7 @@ import GeneralRoutes from "@express-routes/routes";
 import fs from "fs";
 
 global.fecha = new Date();
+
 var ListSockets = [];
 
 // Para generar los certificados correr el siguiente comando, completar los datos que solicita y copiar los dos archivos que se generan
@@ -37,6 +38,8 @@ const dev = NODE_ENV === "development";
 if (cluster.isMaster) {
   new pgWebPush();
   //createConnection();
+  let Tkn = new Token();
+  Tkn.deleteAll();
 }
 
 if (cluster.isMaster) {

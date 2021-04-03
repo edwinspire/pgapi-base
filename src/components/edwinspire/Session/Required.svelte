@@ -23,7 +23,7 @@
   onMount(() => {
     var decoded = jwt.decode(getCookie("TOKEN_USER"), { complete: false });
 
-    //console.log(decoded);
+    console.log(decoded);
     CurrentUser.set(decoded);
     if (decoded && new Date() < new Date(decoded.exp * 1000)) {
       Authorized = true;
