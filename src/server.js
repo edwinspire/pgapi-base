@@ -73,7 +73,7 @@ if (cluster.isMaster) {
   app.use(passport.initialize());
   //  app.use(passport.session());
 
-  require("@edwinspire/express-pgapi/passport_pg");
+  require("@edwinspire/express-pgapi/Passport");
 
   app.use(flash());
   app.use(GeneralRoutes);
