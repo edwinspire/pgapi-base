@@ -1,39 +1,21 @@
-<script>
-  import { onMount } from "svelte";
-  import { FetchData } from "@edwinspire/fetch/FetchData.js";
-  import Menu from "../../components/edwinspire/Menu/Menu.svelte";
-  import Session from "../../components/edwinspire/Session/Required.svelte";
-  import {CurrentUser} from "../../components/edwinspire/Session/Store.js";
-
-  let FData = new FetchData();
-  let promise = new Promise((resolve, reject) => {
-    resolve();
-  });
-
-  async function fetchData() {
-    const res = await FData.get(
-      "/pgapi/omab/files",
-      {},
-      {
-        "Content-Type": "application/json",
-      }
-    );
-    const data = await res.json();
-
-    if (res.ok) {
-      return data;
-    } else {
-      throw new Error(data);
-    }
+<script context="module">
+  var { CheckSession } = require("@edwinspire/svelt-session/Preload");
+  export function preload(page, session) {
+    return CheckSession(this, page, session, "/");
   }
-
-  onMount(async () => {
-    console.log($CurrentUser);
-    //promise =  fetchData();
-  });
 </script>
-<Session>
+
+<script>
+  import { onMount } from "svelte/internal";
+  import Menu from "../../components/edwinspire/Menu/Menu.svelte";
+  //-- Este bloque sirve para 
+  import { CurrentSession } from "@edwinspire/svelt-session/Store";
+  export let session;
+  CurrentSession.set(session);
+
+  onMount(async () => {});
+</script>
 
 <Menu />
-<div>Hola</div>
-</Session>
+<div>HOA</div>
+<div>{JSON.stringify($CurrentSession)}</div>

@@ -2,23 +2,19 @@
   "bundler": "webpack",
   "shimport": null,
   "assets": {
-    "about": "1dcc3ce8530c8ef7ba52/about.about.js",
-    "home": "1dcc3ce8530c8ef7ba52/home.home.js",
-    "home2": "1dcc3ce8530c8ef7ba52/home2.home2.js",
-    "home~home2~pgAPI": "1dcc3ce8530c8ef7ba52/home~home2~pgAPI.home~home2~pgAPI.js",
-    "index": "1dcc3ce8530c8ef7ba52/index.index.js",
-    "main": "1dcc3ce8530c8ef7ba52/main.js",
-    "pgAPI": "1dcc3ce8530c8ef7ba52/pgAPI.pgAPI.js",
-    "vendors~home~home2~pgAPI": "1dcc3ce8530c8ef7ba52/vendors~home~home2~pgAPI.vendors~home~home2~pgAPI.js",
-    "vendors~pgAPI": "1dcc3ce8530c8ef7ba52/vendors~pgAPI.vendors~pgAPI.js"
+    "about": "258bc9121f2d56f8c947/about.about.js",
+    "home": "258bc9121f2d56f8c947/home.home.js",
+    "index": "258bc9121f2d56f8c947/index.index.js",
+    "main": "258bc9121f2d56f8c947/main.js",
+    "pgAPI": "258bc9121f2d56f8c947/pgAPI.pgAPI.js",
+    "vendors~pgAPI": "258bc9121f2d56f8c947/vendors~pgAPI.vendors~pgAPI.js"
   },
   "css": {
     "chunks": {
       "index.svelte": [],
       "about.svelte": [],
       "pgAPI/index.svelte": [],
-      "home/index.svelte": [],
-      "home/index2.svelte": []
+      "home/index.svelte": []
     }
   }
 }

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const flash = require("connect-flash");
 const { pgWebPush } = require("@edwinspire/express-pgapi/webpush");
-const { Token } = require("@edwinspire/tokens/tokendb");
+const { Token } = require("@edwinspire/tokens/Tokendb");
 const cluster = require("cluster");
 
 //import * as sio from "socket.io";
@@ -33,13 +33,13 @@ const cookieParser = require("cookie-parser");
 const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
 const dev = NODE_ENV === "development";
 //process.env.LOCAL_SERVER = true;
+let iToken = new Token();
 
 // Esto es para que se ejecute solo en el master y no en los workers
 if (cluster.isMaster) {
   new pgWebPush();
   //createConnection();
-  let Tkn = new Token();
-  Tkn.deleteAll();
+  iToken.deleteAll();
 }
 
 if (cluster.isMaster) {
@@ -66,7 +66,7 @@ if (cluster.isMaster) {
         maxAge: 2 * 60 * 60 * 1000, // 1 hour
         httpOnly: true,
         //secure: false, // Uncomment this line to enforce HTTPS protocol.
-        sameSite: true,
+        sameSite: true
       },
     })
   );
@@ -85,15 +85,16 @@ if (cluster.isMaster) {
     sapper.middleware({
       // customize the session
       session: (req, res) => {
-        let toke_user = req.cookies["TOKEN_USER"];
-        let user;
+
+        let userT;
         try {
-          user = jwt.verify(toke_user, TOKEN_ENCRYPT);
-        } catch (err) {
-          console.error(err.message, toke_user);
-          //  user = err.message;
+          let tokeUser = req.cookies["TOKEN_USER"];
+          console.log(tokeUser, req.session);
+          userT = iToken.verify(tokeUser)
+        } catch (error) {
+          console.trace(error);
         }
-        return { user: user, token: toke_user, cookies: req.cookies };
+        return { user: userT, nada: 122222 };
       },
     })
   );

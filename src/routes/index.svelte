@@ -1,5 +1,4 @@
 <script>
-  import { goto } from "@sapper/app";
   import { onMount } from "svelte";
   import { FetchData } from "@edwinspire/fetch/FetchData.js";
 
@@ -29,15 +28,15 @@
       if (!data.login) {
         alert(data.message);
       } else {
-        goto("/home");
+        window.location.href = "/home";
       }
     } else {
       alert("Debe llenar los campos de usuario y clave");
     }
   }
 
-  onMount( () => {
-  FData = new FetchData();
+  onMount(() => {
+    FData = new FetchData();
     // Borra todas las cookies de la aplicación
     (function () {
       var cookies = document.cookie.split("; ");
