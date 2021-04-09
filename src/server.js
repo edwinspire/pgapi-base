@@ -76,9 +76,9 @@ if (cluster.isMaster) {
   require("@edwinspire/express-pgapi/Passport");
 
   app.use(flash());
-  app.use(GeneralRoutes);
   app.use(pgAccessPoint);
-
+  app.use(GeneralRoutes);
+  
   app.use(
     compression({ threshold: 0 }),
     sirv("static", { dev }),
@@ -88,13 +88,13 @@ if (cluster.isMaster) {
 
         let userT;
         try {
-          let tokeUser = req.cookies["TOKEN_USER"];
-          console.log(tokeUser, req.session);
-          userT = iToken.verify(tokeUser)
+          //let tokeUser = req.cookies["TOKEN_USER"];
+          //console.log(tokeUser, req.session);
+          userT = iToken.getUserFromRequest(req)
         } catch (error) {
           console.trace(error);
         }
-        return { user: userT, nada: 122222 };
+        return { user: userT};
       },
     })
   );
