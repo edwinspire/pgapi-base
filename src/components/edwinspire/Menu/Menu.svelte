@@ -10,20 +10,13 @@
     }
 
   
-    onMount(async () => {  
-  
+    onMount(async () => {    
       console.dir(CurrentSession);
-
       NavOnLine = window.navigator.onLine;
-  //    console.log(NavOnLine, navigator);
-  
       window.addEventListener("offline", (event) => {
-        //alert("Esta offline");
         NavOnLine = false;
       });
-  
       window.addEventListener("online", (event) => {
-        //alert("está online");
         NavOnLine = true;
       });
     });
