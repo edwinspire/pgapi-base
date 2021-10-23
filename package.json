@@ -37,7 +37,9 @@
   },
   "homepage": "https://github.com/edwinspire/pgapi-base.git#readme",
   "dependencies": {
+    "@babel/runtime": "^7.15.4",
     "@edwinspire/sequential-promises": "git+https://github.com/edwinspire/sequential-promises.git",
+    "@edwinspire/svelte-component-table": "git+https://github.com/edwinspire/svelte-component-table.git",
     "@edwinspire/tedious-mssql": "git+https://github.com/edwinspire/tedious-mssql.git",
     "@edwinspire/universal-fetch": "git+https://github.com/edwinspire/universal-fetch.git",
     "compression": "^1.7.1",
@@ -60,8 +62,7 @@
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2",
     "telegraf": "^3.38.0",
-    "web-push": "^3.4.4",
-    "@babel/runtime": "^7.15.4"
+    "web-push": "^3.4.4"
   },
   "files": [
     "src",

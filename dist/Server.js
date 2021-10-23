@@ -105,7 +105,7 @@ class Server extends EventEmitter {
     }));
     this.app.use(passport.initialize());
 
-    require("@edwinspire/express-pgapi-server/class/Passport");
+    require("./class/Passport");
 
     this.app.all('/pgapi*', async (req, res) => {
       fnAccessPoint(req, res, custom_response);
