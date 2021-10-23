@@ -15,7 +15,7 @@ const passport = require("passport");
 const { pgListen } = require("./class/pgListen");
 const { SocketIO } = require("./class/SocketIO");
 const { Token } = require("./class/Tokendb");
-const { fnAccessPoint } = require("./class/pgAccessPoint");
+//const { fnAccessPoint } = require("./class/pgAccessPoint");
 
 export class Server extends EventEmitter {
   constructor({ credentials, cluster, listen_notification_list, custom_response }) {
