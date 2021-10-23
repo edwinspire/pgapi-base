@@ -67,7 +67,6 @@ class Server extends EventEmitter {
     super();
     this.credentials = credentials;
     this.cluster = cluster;
-    console.log('Server custom_response', custom_response);
 
     if (listen_notification_list && listen_notification_list.length > 0) {
       new pgListen(listen_notification_list).on('notification', notify => {
@@ -106,8 +105,7 @@ class Server extends EventEmitter {
     }));
     this.app.use(passport.initialize());
 
-    require("@edwinspire/express-pgapi-server/class/Passport"); //this.app.use(pgAccessPoint);
-
+    require("@edwinspire/express-pgapi-server/class/Passport");
 
     this.app.all('/pgapi*', async (req, res) => {
       fnAccessPoint(req, res, custom_response);

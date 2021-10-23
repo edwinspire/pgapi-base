@@ -2,11 +2,11 @@
   "name": "@edwinspire/pgapi-base",
   "version": "1.0.0",
   "description": "pgAPI Base",
-  "main": "server/Server.js",
+  "main": "src/server/Server.js",
   "scripts": {
     "@babel/runtime": "^7.15.4",
     "build": "npm-run-all clean transpile",
-    "transpile": "babel ./server/Server.js --out-dir dist",
+    "transpile": "babel ./src/server/Server.js --out-dir dist",
     "clean": "rimraf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -64,7 +64,7 @@
     "@babel/runtime": "^7.15.4"
   },
   "files": [
-    "server",
+    "src",
     "dist"
   ]
 }
