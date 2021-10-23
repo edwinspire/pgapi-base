@@ -51,11 +51,8 @@ const {
 
 const {
   Token
-} = require("./class/Tokendb");
+} = require("./class/Tokendb"); //const { fnAccessPoint } = require("./class/pgAccessPoint");
 
-const {
-  fnAccessPoint
-} = require("./class/pgAccessPoint");
 
 class Server extends EventEmitter {
   constructor({
