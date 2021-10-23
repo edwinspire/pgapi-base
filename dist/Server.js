@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Server = void 0;
 
-var sapper = _interopRequireWildcard(require("@sapper/server"));
+var sapper = _interopRequireWildcard(require("./class/@sapper"));
 
 var _sirv = _interopRequireDefault(require("sirv"));
 

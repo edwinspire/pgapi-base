@@ -1,6 +1,6 @@
 const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
 const dev = NODE_ENV === "development";
-import * as sapper from "@sapper/server";
+import * as sapper from "./class/@sapper";
 import sirv from "sirv";
 import compression from "compression";
 const pgAccessPoint = require("./class/pgAccessPoint");
