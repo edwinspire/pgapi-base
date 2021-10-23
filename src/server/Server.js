@@ -1,6 +1,6 @@
 const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
 const dev = NODE_ENV === "development";
-import * as sapper from "./class/@sapper";
+//import * as sapper from "./class/@sapper";
 import sirv from "sirv";
 import compression from "compression";
 const pgAccessPoint = require("./class/pgAccessPoint");
@@ -18,7 +18,7 @@ const { Token } = require("./class/Tokendb");
 //const { fnAccessPoint } = require("./class/pgAccessPoint");
 
 export class Server extends EventEmitter {
-  constructor({ credentials, cluster, listen_notification_list, custom_response }) {
+  constructor({ credentials, cluster, listen_notification_list, custom_response, sapper }) {
     super();
     this.credentials = credentials;
     this.cluster = cluster;
@@ -60,22 +60,23 @@ export class Server extends EventEmitter {
     })
     this.app.use(GeneralRoutes);
 
-    this.app.use(
-      compression({ threshold: 0 }),
-      sirv("static", { dev }),
-      sapper.middleware({
-        // customize the session
-        session: (req, res) => {
-          let userT;
-          try {
-            userT = this.token.getUserFromRequest(req);
-          } catch (error) {
-            console.trace(error);
-          }
-          return { user: userT };
-        },
-      })
-    );
+  this.app.use(
+    compression({ threshold: 0 }),
+    sirv("static", { dev }),
+    sapper.middleware({
+      // customize the session
+      session: (req, res) => {
+        let userT;
+        try {
+          userT = this.token.getUserFromRequest(req);
+        } catch (error) {
+          console.trace(error);
+        }
+        return { user: userT };
+      },
+    })
+  );
+   
 
   }
 
