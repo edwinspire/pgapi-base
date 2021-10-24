@@ -2,7 +2,7 @@ const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
 const dev = NODE_ENV === "development";
 import sirv from "sirv";
 import compression from "compression";
-const fnAccessPoint = require("./class/fnAccessPoint.js");
+const {fnAccessPoint} = require("./class/fnAccessPoint.js");
 import GeneralRoutes from "./class/routes";
 const EventEmitter = require("events");
 const express = require("express");
@@ -25,8 +25,6 @@ export class Server extends EventEmitter {
     super();
     this.credentials = credentials;
     this.cluster = cluster;
-
-    console.log('fnAccessPoint: '. fnAccessPoint);
 
     if (listen_notification_list && listen_notification_list.length > 0) {
       new pgListen(listen_notification_list).on("notification", (notify) => {
