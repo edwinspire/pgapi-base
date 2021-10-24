@@ -1,5 +1,5 @@
-const dotenv = require("dotenv");
-dotenv.config();
+//const dotenv = require("dotenv");
+//dotenv.config();
 //const connectionString = process.env.DATABASE_URL;
 const {DATABASE_URL, PG_WITH_SSL_REJECTUNAUTHORIZED_FALSE} = process.env;
 
