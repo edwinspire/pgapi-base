@@ -57,7 +57,7 @@
     "passport-local": "^1.0.0",
     "pg": "^8.7.1",
     "polka": "next",
-    "sapper": "^0.27.0",
+    "sapper": "^0.27.16",
     "sirv": "^0.4.0",
     "soap": "^0.35.0",
     "socket.io": "^4.1.2",
