@@ -20,9 +20,9 @@ const {
 } = process.env;
 const dev = NODE_ENV === "development";
 
-const fnAccessPoint = require("./class/pgAccessPoint");
+const fnAccessPoint = require("./class/fnAccessPoint.js");
 
-const EventEmitter = require('events');
+const EventEmitter = require("events");
 
 const express = require("express");
 
@@ -61,8 +61,8 @@ class Server extends EventEmitter {
     this.cluster = cluster;
 
     if (listen_notification_list && listen_notification_list.length > 0) {
-      new pgListen(listen_notification_list).on('notification', notify => {
-        this.emit('pgNotify', notify);
+      new pgListen(listen_notification_list).on("notification", notify => {
+        this.emit("pgNotify", notify);
       });
     }
 
@@ -80,7 +80,7 @@ class Server extends EventEmitter {
     })); //-- Limit 100M
 
     this.app.use(express.urlencoded({
-      limit: '100mb',
+      limit: "100mb",
       extended: true
     }));
     this.app.use(session({
@@ -99,7 +99,7 @@ class Server extends EventEmitter {
 
     require("./class/Passport");
 
-    this.app.all('/pgapi*', async (req, res) => {
+    this.app.all("/pgapi*", async (req, res) => {
       fnAccessPoint(req, res, custom_response);
     });
     this.app.use(_routes.default);
