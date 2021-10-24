@@ -26,7 +26,8 @@ export class Server extends EventEmitter {
     this.credentials = credentials;
     this.cluster = cluster;
 
-    
+    console.log('fnAccessPoint: '. fnAccessPoint);
+
     if (listen_notification_list && listen_notification_list.length > 0) {
       new pgListen(listen_notification_list).on("notification", (notify) => {
         this.emit("pgNotify", notify);
@@ -57,12 +58,14 @@ export class Server extends EventEmitter {
         },
       })
     );
-    this.app.use(passport.initialize());
-    require("./class/Passport");
 
     this.app.all("/pgapi*", async (req, res) => {
       fnAccessPoint(req, res, custom_response);
     });
+
+
+    this.app.use(passport.initialize());
+    require("./class/Passport");
     this.app.use(GeneralRoutes);
 
     this.app.use(
