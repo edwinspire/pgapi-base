@@ -4,7 +4,9 @@
   import EndpointForm from "./EndpointForm";
   import MethodForm from "./MethodForm";
   import { ColumnTypes, Table } from "@edwinspire/svelte-component-table/src";
-  import MethodsColumn from "../../pgAPI/Table/Cell/CellMethods.svelte";
+  import MethodsColumn from "../Table/Cell/CellMethods.svelte";
+  //import MethodsColumn from "../../pgAPI/Table/Cell/CellMethods.svelte";
+
   /////////////////////////////////
   //// ENDPOINT ////
   /////////////////////////////////

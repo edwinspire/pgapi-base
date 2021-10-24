@@ -37,8 +37,6 @@ if (PG_WITH_SSL_REJECTUNAUTHORIZED_FALSE === 'true'){
 const pool = new Pool(pgClientParams);
 
 
-
-
 //console.log('POSTGRES', process.env.DATABASE_URL);
 module.exports = {
   query: (text, params) => pool.query(text, params)
