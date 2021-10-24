@@ -30,11 +30,13 @@ const session = require("express-session");
 
 const morgan = require("morgan");
 
-const cookieParser = require("cookie-parser"); //const SendEvent = require("@edwinspire/oms/SendEvent");
+const cookieParser = require("cookie-parser");
 
+const passport = require("passport");
 
-const passport = require("passport"); //const { pgListen } = require("./class/pgListen");
-
+const {
+  pgListen
+} = require("./class/pgListen");
 
 const {
   SocketIO
@@ -42,8 +44,7 @@ const {
 
 const {
   Token
-} = require("./class/Tokendb"); //const { fnAccessPoint } = require("./class/pgAccessPoint");
-
+} = require("./class/Tokendb");
 
 class Server extends EventEmitter {
   constructor({
@@ -56,13 +57,12 @@ class Server extends EventEmitter {
     super();
     this.credentials = credentials;
     this.cluster = cluster;
-    /*
+
     if (listen_notification_list && listen_notification_list.length > 0) {
-      new pgListen(listen_notification_list).on("notification", (notify) => {
+      new pgListen(listen_notification_list).on("notification", notify => {
         this.emit("pgNotify", notify);
       });
     }
-    */
 
     this.token = new Token();
 

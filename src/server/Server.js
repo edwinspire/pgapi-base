@@ -9,12 +9,10 @@ const express = require("express");
 const session = require("express-session");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-//const SendEvent = require("@edwinspire/oms/SendEvent");
 const passport = require("passport");
-//const { pgListen } = require("./class/pgListen");
+const { pgListen } = require("./class/pgListen");
 const { SocketIO } = require("./class/SocketIO");
 const { Token } = require("./class/Tokendb");
-//const { fnAccessPoint } = require("./class/pgAccessPoint");
 
 export class Server extends EventEmitter {
   constructor({
@@ -28,13 +26,13 @@ export class Server extends EventEmitter {
     this.credentials = credentials;
     this.cluster = cluster;
 
-    /*
+    
     if (listen_notification_list && listen_notification_list.length > 0) {
       new pgListen(listen_notification_list).on("notification", (notify) => {
         this.emit("pgNotify", notify);
       });
     }
-    */
+    
 
     this.token = new Token();
 
