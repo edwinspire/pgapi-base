@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/edwinspire/pgapi-base.git#readme",
   "dependencies": {
-    "pg-native": "file:./src/server/pg-native",
+    "pg-native": "file:./src/server/class/pg-native",
     "@babel/runtime": "^7.15.4",
     "@edwinspire/sequential-promises": "git+https://github.com/edwinspire/sequential-promises.git",
     "@edwinspire/svelte-component-table": "git+https://github.com/edwinspire/svelte-component-table.git",
