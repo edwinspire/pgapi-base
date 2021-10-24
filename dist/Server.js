@@ -20,7 +20,7 @@ const {
 } = process.env;
 const dev = NODE_ENV === "development";
 
-const pgAccessPoint = require("./class/pgAccessPoint");
+const fnAccessPoint = require("./class/pgAccessPoint");
 
 const EventEmitter = require('events');
 

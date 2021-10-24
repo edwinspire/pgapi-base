@@ -2,7 +2,7 @@ const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
 const dev = NODE_ENV === "development";
 import sirv from "sirv";
 import compression from "compression";
-const pgAccessPoint = require("./class/pgAccessPoint");
+const fnAccessPoint = require("./class/pgAccessPoint");
 import GeneralRoutes from "./class/routes";
 const EventEmitter = require('events');
 const express = require("express");

@@ -1,6 +1,5 @@
 // Modulo que realiza las conexiones a PostgreSQL
 const dotenv = require("dotenv");
-dotenv.config();
 const { Pool } = require('pg')
 const {DATABASE_URL, PG_WITH_SSL_REJECTUNAUTHORIZED_FALSE} = process.env;
 
