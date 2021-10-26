@@ -115,7 +115,7 @@ export class Server extends EventEmitter {
         }
       });
 
-      httpServer.setTimeout(1000 * 60 * 5); // Para 5 minutos
+      httpServer.setTimeout(EXPRESSJS_SERVER_TIMEOUT || 1000 * 60 * 5); // Para 5 minutos
       
     }
   }
