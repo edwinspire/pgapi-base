@@ -114,6 +114,9 @@ export class Server extends EventEmitter {
           console.log("App listening on port " + PORT);
         }
       });
+
+      httpServer.setTimeout(1000 * 60 * 5); // Para 5 minutos
+      
     }
   }
 
