@@ -96,6 +96,25 @@ export class Token {
     }
   }
 
+  setToken(req, res, user) {
+    let t = this.token(
+      req,
+      user.uniq_username,
+      user.fullname,
+      user.multilogin,
+      user.profile,
+      user.payload,
+      user.expiresIn,
+      user.isSession
+    );
+    console.log("token: " + t, user);
+    if (t) {
+      res.cookie("TOKEN_USER", token, {
+        expire: 3600 * 1000 * 24 * 365 * 50, // Expira en 10 años, sin ambargo internamente el token tiene su propia fecha de expiración
+      });
+    }
+  }
+
   token(
     request,
     uniq_username,

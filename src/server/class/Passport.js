@@ -1,8 +1,8 @@
 const db = require("./pgexpress");
 const passport = require("passport");
 const LocalStrategy = require("passport-local"); //
-const { Token } = require("./Tokendb");
-const TokenBD = new Token();
+//const { Token } = require("./Tokendb");
+//const TokenBD = new Token();
 //var soap = require("soap");
 
 // Usa base de datos en PostgreSQL
@@ -22,15 +22,6 @@ passport.use(
         if (respg.rows.length > 0) {
           let r = respg.rows[0].fn_login;
           if (r.login) {
-            let t = await TokenBD.token(
-              req,
-              r.user.username,
-              r.user.fullname,
-              r.user.multilogin,
-              r.user.profile,
-              r.user.payload
-            );
-            result.token = t;
             return done(null, r);
           } else {
             return done(null, r, { message: r.message });
@@ -72,15 +63,6 @@ passport.use(
 
       try {
         if (user == "demo" && pwd == "demo") {
-          let t = await TokenBD.token(
-            req,
-            result.username,
-            result.fullname,
-            result.multilogin,
-            result.profile,
-            result.payload
-          );
-          result.token = t;
           return done(null, result);
         } else {
           result.login = false;

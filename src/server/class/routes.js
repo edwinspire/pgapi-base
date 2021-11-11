@@ -14,22 +14,8 @@ router.post(
   async function (req, res) {
     try {
       let user = req.user.user;
-      let token = await TokenDB.token(
-        req,
-        user.username,
-        user.fullname,
-        user.multilogin,
-        user.profile,
-        user.payload
-      );
-      if (token) {
-        res.cookie("TOKEN_USER", token, {
-          expire: 3600 * 1000 * 24 * 365 * 50, // Expira en 10 años, sin ambargo internamente el token tiene su propia fecha de expiración
-        });
-        res.json(req.user);
-      } else {
-        res.status(500).json({ message: "Token not generated" });
-      }
+      TokenDB.setToken(req, resp, user);
+      res.json(req.user);
     } catch (e) {
       console.error(e);
       res.status(500).json(e);
