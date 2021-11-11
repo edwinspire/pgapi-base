@@ -20,7 +20,9 @@ const {
 } = process.env;
 const dev = NODE_ENV === "development";
 
-const fnAccessPoint = require("./class/fnAccessPoint.js");
+const {
+  fnAccessPoint
+} = require("./class/fnAccessPoint.js");
 
 const EventEmitter = require("events");
 
@@ -93,13 +95,13 @@ class Server extends EventEmitter {
         sameSite: true
       }
     }));
+    this.app.all("/pgapi*", async (req, res) => {
+      fnAccessPoint(req, res, custom_response);
+    });
     this.app.use(passport.initialize());
 
     require("./class/Passport");
 
-    this.app.all("/pgapi*", async (req, res) => {
-      fnAccessPoint(req, res, custom_response);
-    });
     this.app.use(_routes.default);
     this.app.use((0, _compression.default)({
       threshold: 0
@@ -148,6 +150,7 @@ class Server extends EventEmitter {
           console.log("App listening on port " + PORT);
         }
       });
+      httpServer.setTimeout(EXPRESSJS_SERVER_TIMEOUT || 1000 * 60 * 5); // Para 5 minutos
     }
   }
 
