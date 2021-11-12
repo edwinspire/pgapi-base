@@ -1,4 +1,4 @@
-const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
+const { PORT, NODE_ENV, TOKEN_ENCRYPT, EXPRESSJS_SERVER_TIMEOUT } = process.env;
 const dev = NODE_ENV === "development";
 import sirv from "sirv";
 import compression from "compression";
