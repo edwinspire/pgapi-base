@@ -2,14 +2,14 @@ const { PORT, NODE_ENV, TOKEN_ENCRYPT } = process.env;
 const dev = NODE_ENV === "development";
 import sirv from "sirv";
 import compression from "compression";
-const {fnAccessPoint} = require("./class/fnAccessPoint.js");
+const  AccessPoint  = require("./class/fnAccessPoint.js").AccessPoint;
 import GeneralRoutes from "./class/routes";
 const EventEmitter = require("events");
 const express = require("express");
 const session = require("express-session");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-const passport = require("passport");
+//const passport = require("passport");
 const { pgListen } = require("./class/pgListen");
 const { SocketIO } = require("./class/SocketIO");
 const { Token } = require("./class/Tokendb");
@@ -25,13 +25,13 @@ export class Server extends EventEmitter {
     super();
     this.credentials = credentials;
     this.cluster = cluster;
+    this.AccessPoint = new AccessPoint(custom_response);
 
     if (listen_notification_list && listen_notification_list.length > 0) {
       new pgListen(listen_notification_list).on("notification", (notify) => {
         this.emit("pgNotify", notify);
       });
     }
-    
 
     this.token = new Token();
 
@@ -56,14 +56,15 @@ export class Server extends EventEmitter {
         },
       })
     );
-
+    /*
     this.app.all("/pgapi*", async (req, res) => {
       fnAccessPoint(req, res, custom_response);
     });
+*/
+    this.app.use(this.AccessPoint.Middleware);
 
-
-    this.app.use(passport.initialize());
-    require("./class/Passport");
+    //this.app.use(passport.initialize());
+    //require("./class/Passport");
     this.app.use(GeneralRoutes);
 
     this.app.use(

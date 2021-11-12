@@ -127,43 +127,36 @@ export class Token {
   ) {
     let t;
 
+    /*
     if (!expiresIn) {
       expiresIn = "2h";
     }
-
+*/
+    /*
     if (isSession === undefined) {
       isSession = true;
     } else {
       isSession = false;
     }
+    */
 
     if (uniq_username) {
-      multilogin = multilogin || false;
+      //multilogin = multilogin || false;
       let ip =
         request.headers["x-forwarded-for"] || request.connection.remoteAddress;
-      let device;
-
-      const hash = createHash("sha256");
-      hash.update(
-        JSON.stringify(ip) + JSON.stringify(request.headers["user-agent"])
+      let user_data = new User(
+        uniq_username,
+        fullname,
+        multilogin,
+        profile,
+        payload,
+        expiresIn,
+        isSession,
+        { ip: ip, "user-agent": request.headers["user-agent"] }
       );
-      device = hash.digest("hex");
 
-      if (device) {
-        let UserSignin = {
-          device: device,
-          username: uniq_username,
-          multilogin: multilogin,
-          profile: profile,
-          payload: payload,
-          fullname: fullname || uniq_username,
-          idtoken: Math.random(),
-          isSession: isSession,
-        };
-
-        t = jwt.sign(UserSignin, TOKEN_ENCRYPT, { expiresIn: expiresIn });
-        this.save(t);
-      }
+      t = jwt.sign(user_data, TOKEN_ENCRYPT, { expiresIn: u.expiresIn });
+      this.save(t);
     } else {
       throw "uniq_username not found";
     }
@@ -209,22 +202,35 @@ export class Token {
     return user;
   }
 
+  static get_authorization(req) {
+    let authorization = { type: undefined, credentials: undefined };
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.indexOf("Basic ") >= 0
+    ) {
+      authorization.type = "Basic";
+      const base64Credentials = req.headers.authorization.split(" ")[1];
+      const credentials = Buffer.from(base64Credentials, "base64").toString(
+        "ascii"
+      );
+      const [username, password] = credentials.split(":");
+      authorization.credentials = { username, password };
+    }
+    return authorization;
+  }
+
   getUserFromRequest(req) {
     let toke_user = req.cookies["TOKEN_USER"];
     let user = this.validateSession(toke_user);
     if (!user) {
-      if (
-        req.headers.authorization &&
-        req.headers.authorization.indexOf("Basic ") >= 0
-      ) {
-        const base64Credentials = req.headers.authorization.split(" ")[1];
-        const credentials = Buffer.from(base64Credentials, "base64").toString(
-          "ascii"
-        );
-        const [username, password] = credentials.split(":");
-        //idata.headers.BasicAuthentication = { username: username, password: password };
-        if (username == password) {
-          user = this.getUser(password);
+      // Se trata de detectar el usuario si se está usando Basic Auth
+      let authorization = Token.get_authorization(req);
+      if (authorization.type === "Basic") {
+        if (
+          authorization.credentials.username === "pgapikey" &&
+          authorization.credentials.password
+        ) {
+          user = this.getUser(authorization.credentials.password);
         }
       }
     }
@@ -274,6 +280,43 @@ export class Token {
       }
     } catch (error) {
       console.error("Error al eliminar archivo token");
+    }
+  }
+}
+
+export class User {
+  constructor(
+    username,
+    fullname,
+    multilogin,
+    profile,
+    payload,
+    expiresIn,
+    isSession,
+    device
+  ) {
+    this.username = username;
+    (this.fullname = fullname || uniq_username),
+      (this.multilogin = multilogin || false);
+    this.profile = profile;
+    this.payload = payload;
+    this.expiresIn = expiresIn;
+    this.isSession = isSession;
+
+    if (!this.expiresIn) {
+      expiresIn = "2h";
+    }
+
+    if (this.isSession === undefined) {
+      this.isSession = true;
+    } else {
+      this.isSession = false;
+    }
+
+    if (this.uniq_username) {
+      const hash = createHash("sha256");
+      hash.update(JSON.stringify(device));
+      this.device = hash.digest("hex");
     }
   }
 }

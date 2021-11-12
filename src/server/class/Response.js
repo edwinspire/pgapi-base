@@ -1,3 +1,5 @@
+import { Token } from "./Tokendb";
+
 const TediousMssql = require("@edwinspire/tedious-mssql");
 
 export class Response {
@@ -11,7 +13,9 @@ export class Response {
     }
   }
   Test(pgdata, req, res) {
-    res.status(200).json({ ok: "Personalizado y llamado por pgapi" });
+    res
+      .status(200)
+      .json({ ok: "Personalizado y llamado por pgapi", data: pgdata });
   }
 
   async DriverMsSql(pgdata, req, res) {
@@ -26,32 +30,25 @@ export class Response {
     }
   }
 
-  DrivePassport(pgdata, req, res) {
-      console.log(pgdata);
-    passport.authenticate(PASSPORT_STRATEGY, { session: false }),
-      async function (req, res) {
-        try {
-          let user = req.user.user;
-          let token = await TokenDB.token(
-            req,
-            user.username,
-            user.fullname,
-            user.multilogin,
-            user.profile,
-            user.payload
-          );
-          if (token) {
-            res.cookie("TOKEN_USER", token, {
-              expire: 3600 * 1000 * 24 * 365 * 50, // Expira en 10 años, sin ambargo internamente el token tiene su propia fecha de expiración
-            });
-            res.json(req.user);
-          } else {
-            res.status(500).json({ message: "Token not generated" });
-          }
-        } catch (e) {
-          console.error(e);
-          res.status(500).json(e);
-        }
-      };
+  BasicLoginDemo(pgdata, req, res) {
+    let authorization = Token.get_authorization(req);
+
+    if (authorization.type == "basic") {
+      let user = authorization.user;
+      let password = authorization.password;
+      if (user == "demo" && password == "demo") {
+        res
+          .status(200)
+          .json({ message: "Personalizado y llamado por pgapi", data: pgdata });
+      } else {
+        res
+          .status(401)
+          .json({ message: "Las credenciales no son correctas", data: pgdata });
+      }
+    } else {
+      res
+        .status(401)
+        .json({ message: "No hay credenciales para el acceso", data: pgdata });
+    }
   }
 }
