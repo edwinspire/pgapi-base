@@ -83,8 +83,8 @@ export class AccessPoint {
     }
   }
   async Middleware(req, res, next) {
-      console.log(req);
-    if (!req.route.path.startsWith("/pgapi")) {
+      
+    if (!req.originalUrl.startsWith("/pgapi")) {
       next();
     } else {
       try {

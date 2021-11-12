@@ -5,6 +5,7 @@ const TediousMssql = require("@edwinspire/tedious-mssql");
 export class Response {
   constructor() {}
   execute(function_name, pgdata, req, res) {
+    console.log("Execute: " + function_name);
     try {
       this[function_name](pgdata, req, res);
     } catch (error) {
@@ -29,6 +30,11 @@ export class Response {
       res.status(500).json(err);
     }
   }
+
+_setToken(res, user){
+  var token = new Token();
+token.setToken(res, user);
+}
 
   BasicLoginDemo(pgdata, req, res) {
     let authorization = Token.get_authorization(req);

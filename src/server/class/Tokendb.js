@@ -96,52 +96,27 @@ export class Token {
     }
   }
 
-  setToken(req, res, user) {
-    let t = this.token(
-      req,
-      user.uniq_username,
-      user.fullname,
-      user.multilogin,
-      user.profile,
-      user.payload,
-      user.expiresIn,
-      user.isSession
-    );
-    console.log("token: " + t, user);
-    if (t) {
-      res.cookie("TOKEN_USER", token, {
-        expire: 3600 * 1000 * 24 * 365 * 50, // Expira en 10 años, sin ambargo internamente el token tiene su propia fecha de expiración
-      });
-    }
+  setToken(response, user){
+    //TODO: hacer que se valide que user sea instancia de User
+let t = this.token(user);
+if (t) {
+  response.cookie("TOKEN_USER", t, {
+    expire: 3600 * 1000 * 24 * 365 * 50, // Expira en 10 años, sin ambargo internamente el token tiene su propia fecha de expiración
+  });
+  this.save(t);
+}
+return t;
   }
 
   token(
-    request,
-    uniq_username,
-    fullname,
-    multilogin,
-    profile,
-    payload,
-    expiresIn,
-    isSession
+    user
   ) {
+    //TODO: hacer que se valide que user sea instancia de User
     let t;
-
-    /*
-    if (!expiresIn) {
-      expiresIn = "2h";
-    }
-*/
-    /*
-    if (isSession === undefined) {
-      isSession = true;
-    } else {
-      isSession = false;
-    }
-    */
-
-    if (uniq_username) {
+console.log(user);
+    if (user && user.username) {
       //multilogin = multilogin || false;
+      /*
       let ip =
         request.headers["x-forwarded-for"] || request.connection.remoteAddress;
       let user_data = new User(
@@ -154,11 +129,11 @@ export class Token {
         isSession,
         { ip: ip, "user-agent": request.headers["user-agent"] }
       );
+*/
+      t = jwt.sign({...user}, TOKEN_ENCRYPT, { expiresIn: user.expiresIn });
 
-      t = jwt.sign(user_data, TOKEN_ENCRYPT, { expiresIn: u.expiresIn });
-      this.save(t);
     } else {
-      throw "uniq_username not found";
+      throw "username not found";
     }
 
     return t;
@@ -288,23 +263,25 @@ export class User {
   constructor(
     username,
     fullname,
-    multilogin,
     profile,
+    multilogin,
+    ip, 
+    user_agent,
     payload,
     expiresIn,
-    isSession,
-    device
+    isSession
   ) {
     this.username = username;
-    (this.fullname = fullname || uniq_username),
-      (this.multilogin = multilogin || false);
+    this.fullname = fullname || username,
+    this.multilogin = multilogin || false;
     this.profile = profile;
     this.payload = payload;
     this.expiresIn = expiresIn;
     this.isSession = isSession;
-
+    this.ip = ip || 'unknow';
+    this.user_agent = user_agent || 'unknow';
     if (!this.expiresIn) {
-      expiresIn = "2h";
+      this.expiresIn = "2h";
     }
 
     if (this.isSession === undefined) {
@@ -313,10 +290,9 @@ export class User {
       this.isSession = false;
     }
 
-    if (this.uniq_username) {
       const hash = createHash("sha256");
-      hash.update(JSON.stringify(device));
+      hash.update(JSON.stringify({ip: this.ip, user_agent: this.user_agent}));
       this.device = hash.digest("hex");
-    }
+
   }
 }

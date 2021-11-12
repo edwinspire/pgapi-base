@@ -61,7 +61,13 @@ export class Server extends EventEmitter {
       fnAccessPoint(req, res, custom_response);
     });
 */
-    this.app.use(this.AccessPoint.Middleware);
+
+//console.log(this.AccessPoint.Middleware);
+
+    this.app.use(( req, res, next)=>{ 
+      this.AccessPoint.Middleware(req, res, next);
+     });
+     
 
     //this.app.use(passport.initialize());
     //require("./class/Passport");
