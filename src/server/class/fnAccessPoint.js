@@ -70,7 +70,11 @@ export async function fnAccessPoint(req, res, custom_response) {
 export class AccessPoint {
   constructor(custom_response) {
 
-    console.log("* custom_response *", custom_response.prototype instanceof Response);
+    //console.log("* custom_response *", );
+
+    if(!(custom_response.prototype instanceof Response)){
+        throw new Error("custom_response must be instance of Response");
+    }
 
     this.CustomResponse = new Response();
     this.TokenDB = new Token();
@@ -79,6 +83,7 @@ export class AccessPoint {
     }
   }
   async Middleware(req, res, next) {
+      console.log(req);
     if (!req.route.path.startsWith("/pgapi")) {
       next();
     } else {
