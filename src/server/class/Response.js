@@ -31,10 +31,25 @@ export class Response {
     }
   }
 
-_setToken(res, user){
-  var token = new Token();
-token.setToken(res, user);
-}
+  _setToken(res, user) {
+    var token = new Token();
+    token.setToken(res, user);
+  }
+
+  LogOut(pgdata, req, res) {
+    console.log("LogOut", pgdata);
+    let redirect = pgdata.redirect || "/";
+    var TokenDB = new Token();
+    TokenDB.delete(req.cookies["TOKEN_USER"]);
+    res.cookie(
+      "TOKEN_USER",
+      {},
+      {
+        expire: 1,
+      }
+    );
+    res.redirect(redirect);
+  }
 
   BasicLoginDemo(pgdata, req, res) {
     let authorization = Token.get_authorization(req);

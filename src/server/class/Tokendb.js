@@ -5,6 +5,43 @@ const { TOKEN_ENCRYPT } = process.env;
 const jwt = require("jsonwebtoken");
 const { createHash } = require("crypto");
 
+export class User {
+  constructor(
+    username,
+    fullname,
+    profile,
+    multilogin,
+    ip,
+    user_agent,
+    payload,
+    expiresIn,
+    isSession
+  ) {
+    this.username = username;
+    (this.fullname = fullname || username),
+      (this.multilogin = multilogin || false);
+    this.profile = profile;
+    this.payload = payload;
+    this.expiresIn = expiresIn;
+    this.isSession = isSession;
+    this.ip = ip || "unknow";
+    this.user_agent = user_agent || "unknow";
+    if (!this.expiresIn) {
+      this.expiresIn = "2h";
+    }
+
+    if (this.isSession === undefined) {
+      this.isSession = true;
+    } else {
+      this.isSession = false;
+    }
+
+    const hash = createHash("sha256");
+    hash.update(JSON.stringify({ ip: this.ip, user_agent: this.user_agent }));
+    this.device = hash.digest("hex");
+  }
+}
+
 export class Token {
   constructor() {
     this._path_token = "tmptoken";
@@ -96,42 +133,31 @@ export class Token {
     }
   }
 
-  setToken(response, user){
-    //TODO: hacer que se valide que user sea instancia de User
-let t = this.token(user);
-if (t) {
-  response.cookie("TOKEN_USER", t, {
-    expire: 3600 * 1000 * 24 * 365 * 50, // Expira en 10 años, sin ambargo internamente el token tiene su propia fecha de expiración
-  });
-  this.save(t);
-}
-return t;
+  setToken(response, user) {
+    if (!(user.prototype instanceof User)) {
+      throw new Error("user is not instance of User");
+    }
+
+    let t = this.token(user);
+    if (t) {
+      response.cookie("TOKEN_USER", t, {
+        expire: 3600 * 1000 * 24 * 365 * 50, // Expira en 10 años, sin ambargo internamente el token tiene su propia fecha de expiración
+      });
+      this.save(t);
+    }
+    return t;
   }
 
-  token(
-    user
-  ) {
-    //TODO: hacer que se valide que user sea instancia de User
-    let t;
-console.log(user);
-    if (user && user.username) {
-      //multilogin = multilogin || false;
-      /*
-      let ip =
-        request.headers["x-forwarded-for"] || request.connection.remoteAddress;
-      let user_data = new User(
-        uniq_username,
-        fullname,
-        multilogin,
-        profile,
-        payload,
-        expiresIn,
-        isSession,
-        { ip: ip, "user-agent": request.headers["user-agent"] }
-      );
-*/
-      t = jwt.sign({...user}, TOKEN_ENCRYPT, { expiresIn: user.expiresIn });
+  token(user) {
+    
+    if (!(user.prototype instanceof User)) {
+      throw new Error("user is not instance of User");
+    }
 
+    let t;
+
+    if (user && user.username) {
+      t = jwt.sign({ ...user }, TOKEN_ENCRYPT, { expiresIn: user.expiresIn });
     } else {
       throw "username not found";
     }
@@ -256,43 +282,5 @@ console.log(user);
     } catch (error) {
       console.error("Error al eliminar archivo token");
     }
-  }
-}
-
-export class User {
-  constructor(
-    username,
-    fullname,
-    profile,
-    multilogin,
-    ip, 
-    user_agent,
-    payload,
-    expiresIn,
-    isSession
-  ) {
-    this.username = username;
-    this.fullname = fullname || username,
-    this.multilogin = multilogin || false;
-    this.profile = profile;
-    this.payload = payload;
-    this.expiresIn = expiresIn;
-    this.isSession = isSession;
-    this.ip = ip || 'unknow';
-    this.user_agent = user_agent || 'unknow';
-    if (!this.expiresIn) {
-      this.expiresIn = "2h";
-    }
-
-    if (this.isSession === undefined) {
-      this.isSession = true;
-    } else {
-      this.isSession = false;
-    }
-
-      const hash = createHash("sha256");
-      hash.update(JSON.stringify({ip: this.ip, user_agent: this.user_agent}));
-      this.device = hash.digest("hex");
-
   }
 }

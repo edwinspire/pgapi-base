@@ -9,7 +9,6 @@ const express = require("express");
 const session = require("express-session");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-//const passport = require("passport");
 const { pgListen } = require("./class/pgListen");
 const { SocketIO } = require("./class/SocketIO");
 const { Token } = require("./class/Tokendb");
@@ -34,7 +33,7 @@ export class Server extends EventEmitter {
     }
 
     this.token = new Token();
-
+    this.token.deleteAll();
     this.socketio = () => {};
 
     this.app = express(); //instancia de express
