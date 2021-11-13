@@ -41,7 +41,7 @@ export class Server extends EventEmitter {
     this.app.use(cookieParser(TOKEN_ENCRYPT));
     this.app.use(express.json({ strict: false, limit: 100000000 })); //-- Limit 100M
     this.app.use(express.urlencoded({ limit: "100mb", extended: true }));
-
+/*
     this.app.use(
       session({
         secret: TOKEN_ENCRYPT,
@@ -55,6 +55,7 @@ export class Server extends EventEmitter {
         },
       })
     );
+    */
     /*
     this.app.all("/pgapi*", async (req, res) => {
       fnAccessPoint(req, res, custom_response);
