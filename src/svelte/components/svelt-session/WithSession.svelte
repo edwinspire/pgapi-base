@@ -1,5 +1,6 @@
 <script context="module">
   export function preload(page, session) {
+      console.log("preload", page, session);
     return { page, session };
   }
 </script>
