@@ -9,7 +9,7 @@ export class User {
   constructor(
     username,
     fullname,
-    profile,
+    role,
     multilogin,
     ip,
     user_agent,
@@ -20,7 +20,7 @@ export class User {
     this.username = username;
     this.fullname = fullname || username;
     this.multilogin = multilogin || false;
-    this.profile = profile;
+    this.role = role;
     this.payload = payload;
     this.expiresIn = expiresIn;
     this.isSession = isSession;
