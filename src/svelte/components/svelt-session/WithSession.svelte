@@ -1,15 +1,17 @@
 <script context="module">
-
-	export function preload(page, session) {
-		return { page, session };
-	}
+  export function preload(page, session) {
+    return { page, session };
+  }
 </script>
 
 <script>
-	export let page;
-    export let session;
-    console.log(page, session);
+  export let session;
+  export let page;
+  import { CurrentSession } from "./Store";
 
+  CurrentSession.set(session);
+
+  console.log(page, session, CurrentSession.get('user'));
 </script>
 
 <div>
