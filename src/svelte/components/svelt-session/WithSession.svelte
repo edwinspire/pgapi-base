@@ -1,8 +1,15 @@
 <script context="module">
-  var { CheckSession } = require("./Preload");
-  export function preload(page, session) {
-    return CheckSession(this, page, session, "/");
-  }
+
+	export function preload(page, session) {
+		return { page, session };
+	}
+</script>
+
+<script>
+	export let page;
+    export let session;
+    console.log(page, session);
+
 </script>
 
 <div>
