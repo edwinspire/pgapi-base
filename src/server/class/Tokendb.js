@@ -40,14 +40,12 @@ export class User {
     hash.update(JSON.stringify({ ip: this.ip, user_agent: this.user_agent }));
     this.device = hash.digest("hex");
     this.idtoken = this.device;
-    if(this.multilogin){
+    if (this.multilogin) {
       let min = 1;
       let max = 999999999;
-      this.idtoken = this.idtoken + "-" + Math.floor(Math.random() * (max - min)) + min;
+      this.idtoken =
+        this.idtoken + "-" + Math.floor(Math.random() * (max - min)) + min;
     }
-
-    
-
   }
 }
 
@@ -158,7 +156,6 @@ export class Token {
   }
 
   token(user) {
-
     if (!(user instanceof User)) {
       throw new Error("user is not instance of User");
     }
