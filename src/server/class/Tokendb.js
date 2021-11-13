@@ -15,11 +15,11 @@ export class User {
     user_agent,
     payload,
     expiresIn,
-    isSession
+    isSession // Determina si es session de usuario o acceso por apikey
   ) {
     this.username = username;
-    (this.fullname = fullname || username),
-      (this.multilogin = multilogin || false);
+    this.fullname = fullname || username;
+    this.multilogin = multilogin || false;
     this.profile = profile;
     this.payload = payload;
     this.expiresIn = expiresIn;
@@ -30,7 +30,7 @@ export class User {
       this.expiresIn = "2h";
     }
 
-    if (this.isSession === undefined) {
+    if (this.isSession) {
       this.isSession = true;
     } else {
       this.isSession = false;
