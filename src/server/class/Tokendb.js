@@ -134,7 +134,7 @@ export class Token {
   }
 
   setToken(response, user) {
-    if (!(user.prototype instanceof User)) {
+    if (!(user instanceof User)) {
       throw new Error("user is not instance of User");
     }
 
@@ -149,8 +149,8 @@ export class Token {
   }
 
   token(user) {
-    
-    if (!(user.prototype instanceof User)) {
+
+    if (!(user instanceof User)) {
       throw new Error("user is not instance of User");
     }
 
