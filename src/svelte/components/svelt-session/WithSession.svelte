@@ -11,7 +11,7 @@
 
   CurrentSession.set(session);
 
-  console.log(page, session, CurrentSession.get('user'));
+  console.log(page, session, CurrentSession);
 </script>
 
 <div>
