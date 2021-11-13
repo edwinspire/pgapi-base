@@ -7,6 +7,6 @@ export function RequireSession(module, page, session) {
     return { page: page, session: session };
   } else {
     UserSession.set({});
-    return module.redirect(401, REDIRECT_ON_UNAUTHORIZED || "/UNAUTHORIZED");
+    return module.redirect(302, REDIRECT_ON_UNAUTHORIZED || "/UNAUTHORIZED");
   }
 }
