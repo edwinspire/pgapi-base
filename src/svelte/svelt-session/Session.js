@@ -31,24 +31,24 @@ export async function RequireSession(module, page, session) {
             UserSession.set({});
             return module.redirect(
               302,
-              REDIRECT_ON_UNAUTHORIZED || "/UNAUTHORIZED"
+              REDIRECT_ON_UNAUTHORIZED || "/401"
             );
           }
         } else {
           UserSession.set({});
           return module.redirect(
             302,
-            REDIRECT_ON_UNAUTHORIZED || "/UNAUTHORIZED"
+            REDIRECT_ON_UNAUTHORIZED || "/401"
           );
         }
       }
     } else {
       // Aqui se deberia redireccionar a una página 404 no encontrada
-      return module.redirect(302, "/");
+      return module.redirect(302, "/404");
     }
   } catch (error) {
     console.trace(error);
-    return module.redirect(302, "/");
+    return module.redirect(302, "/500");
   }
 }
 
