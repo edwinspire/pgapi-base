@@ -1,11 +1,14 @@
-const { REDIRECT_ON_UNAUTHORIZED } = process.env;
+const { REDIRECT_ON_UNAUTHORIZED, PORT } = process.env;
 import { UserSession } from "./Store";
-import {uFetch} from "@edwinspire/universal-fetch/src/fetch";
+import { uFetch } from "@edwinspire/universal-fetch/src/fetch";
 
 export async function RequireSession(module, page, session) {
-console.log("RequireSession", module, page, session);
-  //var FData = new uFetch();
-  //let resp = await FData.get(`/api/session/${session}`);
+  console.log("RequireSession", module, page, session);
+  var FData = new uFetch();
+  let resp = await FData.get(`https://localhost:${PORT}/pgapi_v1/gui/check/path`, { page, session });
+  let resp_path = await resp.json();
+
+  console.log("RequireSession", resp_path);
 
   if (session && session.user) {
     UserSession.set(session.user);
@@ -15,3 +18,7 @@ console.log("RequireSession", module, page, session);
     return module.redirect(302, REDIRECT_ON_UNAUTHORIZED || "/UNAUTHORIZED");
   }
 }
+
+/*
+RETURN_JSON := SELECT gui.fn_check_path(BODY_JSON->'page'->>'path');
+*/
