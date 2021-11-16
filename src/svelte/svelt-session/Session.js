@@ -1,6 +1,6 @@
 const { REDIRECT_ON_UNAUTHORIZED, PORT } = process.env;
 import { UserSession } from "./Store";
-import { uFetch } from "@edwinspire/universal-fetch/src/fetch";
+const uFetch = require("@edwinspire/universal-fetch");
 
 export async function RequireSession(module, page, session) {
   console.log("RequireSession", module, page, session);
