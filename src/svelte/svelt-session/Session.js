@@ -19,27 +19,30 @@ export async function RequireSession(module, page, session) {
         return { page: page, session: session };
       } else {
         if (session && session.user) {
+          // Valida si el rol tiene permisos para acceder a la pagina
           let aut = path.roles.some((role) => {
-            console.log("some", role, session.user.role);
+            console.log("some r", role, session.user.role);
             return role === session.user.role || role === "*";
           });
-//          console.log("RequireSession 1", session.user, aut);
+          // Si el rol no tiene permisos, valida el acceso por usuario
+          if (!aut) {
+            aut = path.users.some((u) => {
+              console.log("some u", u, session.user.username);
+              return u === session.user.username;
+            });
+          }
+
+          //          console.log("RequireSession 1", session.user, aut);
           if (aut) {
             UserSession.set(session.user);
             return { page: page, session: session };
           } else {
             UserSession.set({});
-            return module.redirect(
-              302,
-              REDIRECT_ON_UNAUTHORIZED || "/401"
-            );
+            return module.redirect(302, REDIRECT_ON_UNAUTHORIZED || "/401");
           }
         } else {
           UserSession.set({});
-          return module.redirect(
-            302,
-            REDIRECT_ON_UNAUTHORIZED || "/401"
-          );
+          return module.redirect(302, REDIRECT_ON_UNAUTHORIZED || "/401");
         }
       }
     } else {

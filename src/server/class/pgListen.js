@@ -1,6 +1,7 @@
 //const dotenv = require("dotenv");
 //dotenv.config();
 //const connectionString = process.env.DATABASE_URL;
+//TODO: Cuando se pierde conexion con la base de datos, se cae el servidor. Revisar
 const {DATABASE_URL, PG_WITH_SSL_REJECTUNAUTHORIZED_FALSE} = process.env;
 
 const EventEmitter = require('events');
