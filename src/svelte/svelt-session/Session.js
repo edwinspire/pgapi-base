@@ -3,7 +3,7 @@ import { UserSession } from "./Store";
 const uFetch = require("@edwinspire/universal-fetch");
 
 export async function RequireSession(module, page, session) {
-  //console.log("RequireSession", module, page, session);
+  console.log("RequireSession", module, page, session);
   try {
     var FData = new uFetch();
     let resp = await FData.post(
@@ -12,7 +12,6 @@ export async function RequireSession(module, page, session) {
     );
     let resp_path = await resp.json();
     let path = resp_path.path;
-    //console.log(resp_path, path.enabled);
 
     if (path.enabled) {
       if (path.ispublic) {
@@ -21,40 +20,32 @@ export async function RequireSession(module, page, session) {
         if (session && session.user) {
           // Valida si el rol tiene permisos para acceder a la pagina
           let aut = path.roles.some((role) => {
-            console.log("some r", role, session.user.role);
             return role === session.user.role || role === "*";
           });
           // Si el rol no tiene permisos, valida el acceso por usuario
           if (!aut) {
             aut = path.users.some((u) => {
-              console.log("some u", u, session.user.username);
               return u === session.user.username;
             });
           }
 
-          //          console.log("RequireSession 1", session.user, aut);
           if (aut) {
             UserSession.set(session.user);
             return { page: page, session: session };
           } else {
-            UserSession.set({});
-            return module.redirect(302, REDIRECT_ON_UNAUTHORIZED || "/401");
+            module.error(
+              403,
+              new Error(`No tiene permisos para la página ${page.path}`)
+            );
           }
         } else {
-          UserSession.set({});
-          return module.redirect(302, REDIRECT_ON_UNAUTHORIZED || "/401");
+          module.error(401, new Error(`La página ${page.path} requiere login`));
         }
       }
     } else {
-      // Aqui se deberia redireccionar a una página 404 no encontrada
-      return module.redirect(302, "/404");
+      module.error(404, new Error(`Página ${page.path} no encontrada`));
     }
   } catch (error) {
-    console.trace(error);
-    return module.redirect(302, "/500");
+    module.error(500, error);
   }
 }
-
-/*
-RETURN_JSON := SELECT gui.fn_check_path(BODY_JSON->'page'->>'path');
-*/
