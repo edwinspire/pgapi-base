@@ -1,25 +1,17 @@
-const { REDIRECT_ON_UNAUTHORIZED, PORT } = process.env;
+//const { REDIRECT_ON_UNAUTHORIZED, PORT } = process.env;
 import { UserSession } from "./Store";
-//const uFetch = require("@edwinspire/universal-fetch");
+const uFetch = require("@edwinspire/universal-fetch");
 
 export async function RequireSession(module, page, session) {
   console.log("<<< RequireSession >>>", module, page, session, globalThis);
   try {
     // TODO: hacer dinamica la url
-    const response = await module.fetch("https://localhost:3000/pgapi_v1/gui/check/path", {
-      method: "POST",
-      //mode: 'cors', // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      //credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      //redirect: 'follow', // manual, *follow, error
-      //referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(JSON.stringify({ page, session })), // body data type must match "Content-Type" header
-    });
-    
+    let FData = new uFetch();
+    const response = await FData.post(
+      `https://${page.host}/pgapi_v1/gui/check/path`,
+      { page, session }
+    );
+    console.log("<<<-- RequireSession -->>>", response.status);
     let resp_path = await response.json();
     let path = resp_path.path;
 
