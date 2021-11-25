@@ -5,6 +5,7 @@ const { TOKEN_ENCRYPT } = process.env;
 const jwt = require("jsonwebtoken");
 const { createHash } = require("crypto");
 
+// TODO: ingresar objeto como parametro
 export class User {
   constructor(
     username,
@@ -14,9 +15,14 @@ export class User {
     ip,
     user_agent,
     payload,
-    expiresIn,
-    isSession // Determina si es session de usuario o acceso por apikey
+    expiresIn = '2h',
+    isSession = true // Determina si es session de usuario o acceso por apikey
   ) {
+
+    if (!username) {
+      throw new Error("Username is required");
+    }
+
     this.username = username;
     this.fullname = fullname || username;
     this.multilogin = multilogin || false;

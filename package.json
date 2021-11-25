@@ -53,9 +53,7 @@
     "jsonwebtoken": "^8.5.1",
     "luxon": "^2.0.2",
     "morgan": "^1.10.0",
-    "passport-local": "^1.0.0",
     "pg": "^8.7.1",
-
     "polka": "next",
     "sapper": "^0.27.16",
     "sirv": "^0.4.0",
@@ -63,7 +61,8 @@
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2",
     "telegraf": "^3.38.0",
-    "web-push": "^3.4.4"
+    "web-push": "^3.4.4",
+    "pg-native": "file:./src/server/class/pg-native"
   },
   "files": [
     "src",

@@ -2,11 +2,11 @@ const { PORT, NODE_ENV, TOKEN_ENCRYPT, EXPRESSJS_SERVER_TIMEOUT } = process.env;
 const dev = NODE_ENV === "development";
 import sirv from "sirv";
 import compression from "compression";
-const  AccessPoint  = require("./class/fnAccessPoint.js").AccessPoint;
+const AccessPoint = require("./class/fnAccessPoint.js").AccessPoint;
 import GeneralRoutes from "./class/routes";
 const EventEmitter = require("events");
 const express = require("express");
-const session = require("express-session");
+//const session = require("express-session");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const { pgListen } = require("./class/pgListen");
@@ -41,7 +41,7 @@ export class Server extends EventEmitter {
     this.app.use(cookieParser(TOKEN_ENCRYPT));
     this.app.use(express.json({ strict: false, limit: 100000000 })); //-- Limit 100M
     this.app.use(express.urlencoded({ limit: "100mb", extended: true }));
-/*
+    /*
     this.app.use(
       session({
         secret: TOKEN_ENCRYPT,
@@ -62,12 +62,11 @@ export class Server extends EventEmitter {
     });
 */
 
-//console.log(this.AccessPoint.Middleware);
+    //console.log(this.AccessPoint.Middleware);
 
-    this.app.use(( req, res, next)=>{ 
+    this.app.use((req, res, next) => {
       this.AccessPoint.Middleware(req, res, next);
-     });
-     
+    });
 
     //this.app.use(passport.initialize());
     //require("./class/Passport");
@@ -106,6 +105,7 @@ export class Server extends EventEmitter {
     }
 
     if (httpServer) {
+      //      httpServer.timeout = EXPRESSJS_SERVER_TIMEOUT||120000;
       this.socketio = SocketIO(httpServer);
 
       httpServer.on("error", (e) => {
@@ -122,7 +122,12 @@ export class Server extends EventEmitter {
         }
       });
 
-      httpServer.setTimeout(EXPRESSJS_SERVER_TIMEOUT || 1000 * 60 * 5); // Para 5 minutos
+      let rto = 1000 * 60 * 5;
+      if (EXPRESSJS_SERVER_TIMEOUT && Number(EXPRESSJS_SERVER_TIMEOUT) > 1000) {
+        rto = Number(EXPRESSJS_SERVER_TIMEOUT);
+      }
+
+      httpServer.setTimeout(rto); // Para 5 minutos
     }
   }
 
