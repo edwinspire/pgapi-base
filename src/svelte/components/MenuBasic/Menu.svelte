@@ -1,9 +1,9 @@
 <script>
   import { onMount } from "svelte";
-  import { stores } from "@sapper/app";
+  //import { stores } from "@sapper/app";
   import uFetch from "@edwinspire/universal-fetch";
-  const { session } = stores();
-
+  //const { session } = stores();
+  export let session = {};
   var FData;
   var ConfigMenu = {};
   export let Title = "Menu";
@@ -11,11 +11,11 @@
   function CheckPermissions(ispublic, roles, users) {
     if (ispublic) {
       return true;
-    } else if ($session.user && $session.user.rol) {
+    } else if (session.user && session.user.rol) {
       return (
         roles.includes("*") ||
-        roles.includes($session.user.rol) ||
-        users.includes($session.user.username)
+        roles.includes(session.user.rol) ||
+        users.includes(session.user.username)
       );
     } else {
       return false;
@@ -127,8 +127,8 @@
             <i class="fas fa-user-tie" />
           </span>
           <span>
-            {#if $session && $session.user && $session.user.username}
-              <span>{$session.user.username}</span>
+            {#if session && session.user && session.user.username}
+              <span>{session.user.username}</span>
             {:else}
               <span>Anónimo</span>
             {/if}
