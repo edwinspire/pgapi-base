@@ -6,9 +6,10 @@
   export let session = {};
   var FData;
   var ConfigMenu = {};
-  export let Title = "Menu";
+  export let title = "Menu";
 
   function CheckPermissions(ispublic, roles, users) {
+    console.log(session, ispublic, roles, users);
     if (ispublic) {
       return true;
     } else if (session.user && session.user.rol) {
@@ -36,7 +37,7 @@
     let data = await resp.json();
 
     ConfigMenu = {
-      title: Title,
+      title: title,
       navbar_start: data,
     };
 
