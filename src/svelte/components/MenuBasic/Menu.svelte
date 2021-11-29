@@ -10,17 +10,20 @@
 
   function CheckPermissions(ispublic, roles, users) {
     console.log(session, ispublic, roles, users);
+    let r = false;
     if (ispublic) {
-      return true;
-    } else if (session.user && session.user.rol) {
-      return (
+      r = true;
+    } else if (session.user && session.user.role) {
+      console.log("Revisar rol");
+      r =
         roles.includes("*") ||
-        roles.includes(session.user.rol) ||
-        users.includes(session.user.username)
-      );
+        roles.includes(session.user.role) ||
+        users.includes(session.user.username);
     } else {
-      return false;
+      r = false;
     }
+    console.log("CheckPermissions", r);
+    return r;
   }
 
   let MenuOpen = false;
