@@ -41,6 +41,7 @@ export class Server extends EventEmitter {
     this.app.use(cookieParser(TOKEN_ENCRYPT));
     this.app.use(express.json({ strict: false, limit: 100000000 })); //-- Limit 100M
     this.app.use(express.urlencoded({ limit: "100mb", extended: true }));
+    this.app.use(express.bodyParser({limit: '100mb'}));
     /*
     this.app.use(
       session({

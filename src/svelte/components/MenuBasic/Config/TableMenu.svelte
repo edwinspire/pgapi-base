@@ -13,7 +13,7 @@
     },
     enabled: {
       label: "Habilitado",
-      decorator: {
+        decorator: {
         component: ColumnTypes.Boolean,
       },
     },
