@@ -6,12 +6,13 @@ const AccessPoint = require("./class/fnAccessPoint.js").AccessPoint;
 import GeneralRoutes from "./class/routes";
 const EventEmitter = require("events");
 const express = require("express");
-//const session = require("express-session");
+var methodOverride = require('method-override');
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const { pgListen } = require("./class/pgListen");
 const { SocketIO } = require("./class/SocketIO");
 const { Token } = require("./class/Tokendb");
+var bodyParser = require('body-parser')
 
 export class Server extends EventEmitter {
   constructor({
@@ -38,10 +39,11 @@ export class Server extends EventEmitter {
 
     this.app = express(); //instancia de express
     this.app.use(morgan("dev"));
+    this.app.use(methodOverride());
     this.app.use(cookieParser(TOKEN_ENCRYPT));
-    this.app.use(express.json({ strict: false, limit: 100000000 })); //-- Limit 100M
-    this.app.use(express.urlencoded({ limit: "100mb", extended: true }));
-    this.app.use(express.bodyParser({limit: '100mb'}));
+    this.app.use(bodyParser.json({ strict: false, limit: '100mb' })); //-- Limit 100M
+    this.app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
+    this.app.use(bodyParser({limit: '100mb'}));
     /*
     this.app.use(
       session({
