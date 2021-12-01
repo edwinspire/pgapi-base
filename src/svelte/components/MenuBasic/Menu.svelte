@@ -7,6 +7,7 @@
   var FData;
   var ConfigMenu = {};
   export let title = "Menu";
+  export let url_logout = "/logout";
 
   function CheckPermissions(ispublic, roles, users) {
     console.log(session, ispublic, roles, users);
@@ -50,7 +51,7 @@
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
-    <a class="navbar-item" href="/oms/summary">
+    <a class="navbar-item">
       <span class="icon">
         <img
           src="logo.png"
@@ -125,7 +126,7 @@
       <div class="navbar-item">
         <div
           class="button is-small is-link is-outlined"
-          href="/pgapi_v1/logout"
+          href={url_logout}
         >
           <span class="icon is-small">
             <i class="fas fa-user-tie" />
