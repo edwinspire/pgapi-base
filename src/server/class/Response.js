@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 import { Token } from "./Tokendb";
 const soap = require("soap");
 const TediousMssql = require("@edwinspire/tedious-mssql");
@@ -18,6 +18,33 @@ export class Response {
     res
       .status(200)
       .json({ ok: "Personalizado y llamado por pgapi", data: pgdata });
+  }
+
+  static SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
+    return new Promise((resolve, reject) => {
+      if (wsdl && wsdl.length > 0) {
+        if (SOAPFunctionName && SOAPFunctionName.length > 0) {
+          soap.createClient(wsdl, (err, client) => {
+            if (err) {
+              reject(err);
+            } else {
+              client[SOAPFunctionName](RequestArgs, (err, result) => {
+                if (err) {
+                  console.trace(err);
+                  reject(err);
+                } else {
+                  resolve(result);
+                }
+              });
+            }
+          });
+        } else {
+          reject({ error: "No se ha definido la funcion SOAP" });
+        }
+      } else {
+        reject({ error: "No se ha definido la URL del WSDL" });
+      }
+    });
   }
 
   DriverGenericSOAP(pgdata, req, res) {
