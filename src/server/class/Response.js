@@ -47,36 +47,20 @@ export class Response {
     });
   }
 
-  DriverGenericSOAP(pgdata, req, res) {
+  async DriverGenericSOAP(pgdata, req, res) {
     let wsdl = pgdata.wsdl || req.body.wsdl;
     let args = pgdata.args || req.body.args || {};
     let Soapfunction = pgdata.SOAPFunction || req.body.SOAPFunction || {};
 
-    if (wsdl.length > 0) {
-      soap.createClient(wsdl, (err, client) => {
-        //console.log("Consulta doc ", documento);
-        if (err) {
-          res.status(500).json(err);
-        } else {
-          //    console.log(client.describe());
-          if (Soapfunction && Soapfunction.length > 0) {
-            client[Soapfunction](args, (err, result) => {
-              if (err) {
-                console.trace(documento, err);
-                res.status(500).json(err);
-              } else {
-                res.status(200).json(result);
-              }
-            });
-          } else {
-            res
-              .status(500)
-              .json({ error: "No se ha definido la funcion SOAP" });
-          }
-        }
-      });
-    } else {
-      res.status(500).json({ error: "No se ha definido la URL del WSDL" });
+    try {
+      let soap_response = await Response.SOAPGenericClient(
+        wsdl,
+        Soapfunction,
+        args
+      );
+      res.status(200).json(soap_response);
+    } catch (error) {
+      res.status(500).json(error);
     }
   }
 
