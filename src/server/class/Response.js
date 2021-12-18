@@ -64,12 +64,17 @@ export class Response {
     }
   }
 
-  // TODO : Implementar que los datos necesario para el driver se los pueda obtener tambien extrayendolos del request
+  
   async DriverMsSql(pgdata, req, res) {
     try {
-      let query = pgdata.query;
-      let sql = new TediousMssql(pgdata.connection_string);
-      const result = await sql.execSql(query, pgdata.query_parameters);
+      let query = pgdata.query || req.body.query;
+      let connection_params =
+        pgdata.connection_string ||
+        pgdata.connection_params ||
+        req.body.connection_params;
+      let query_params = pgdata.query_params || req.body.query_params;
+      let sql = new TediousMssql(connection_params);
+      const result = await sql.execSql(query, query_params);
       res.status(200).json(result.rows);
     } catch (err) {
       console.log(err);
