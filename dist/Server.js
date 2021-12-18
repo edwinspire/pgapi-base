@@ -16,25 +16,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const {
   PORT,
   NODE_ENV,
-  TOKEN_ENCRYPT
+  TOKEN_ENCRYPT,
+  EXPRESSJS_SERVER_TIMEOUT
 } = process.env;
 const dev = NODE_ENV === "development";
 
-const {
-  fnAccessPoint
-} = require("./class/fnAccessPoint.js");
+const AccessPoint = require("./class/fnAccessPoint.js").AccessPoint;
 
 const EventEmitter = require("events");
 
 const express = require("express");
 
-const session = require("express-session");
+var methodOverride = require('method-override');
 
 const morgan = require("morgan");
 
 const cookieParser = require("cookie-parser");
-
-const passport = require("passport");
 
 const {
   pgListen
@@ -48,6 +45,8 @@ const {
   Token
 } = require("./class/Tokendb");
 
+var bodyParser = require('body-parser');
+
 class Server extends EventEmitter {
   constructor({
     credentials,
@@ -59,6 +58,7 @@ class Server extends EventEmitter {
     super();
     this.credentials = credentials;
     this.cluster = cluster;
+    this.AccessPoint = new AccessPoint(custom_response);
 
     if (listen_notification_list && listen_notification_list.length > 0) {
       new pgListen(listen_notification_list).on("notification", notify => {
@@ -67,40 +67,54 @@ class Server extends EventEmitter {
     }
 
     this.token = new Token();
+    this.token.deleteAll();
 
     this.socketio = () => {};
 
     this.app = express(); //instancia de express
 
     this.app.use(morgan("dev"));
+    this.app.use(methodOverride());
     this.app.use(cookieParser(TOKEN_ENCRYPT));
-    this.app.use(express.json({
+    this.app.use(bodyParser.json({
       strict: false,
-      limit: 100000000
+      limit: '100mb'
     })); //-- Limit 100M
 
-    this.app.use(express.urlencoded({
+    this.app.use(bodyParser.urlencoded({
       limit: "100mb",
       extended: true
     }));
-    this.app.use(session({
-      secret: TOKEN_ENCRYPT,
-      resave: true,
-      saveUninitialized: true,
-      cookie: {
-        maxAge: 2 * 60 * 60 * 1000,
-        // 1 hour
-        httpOnly: true,
-        //secure: false, // Uncomment this line to enforce HTTPS protocol.
-        sameSite: true
-      }
+    this.app.use(bodyParser({
+      limit: '100mb'
     }));
+    /*
+    this.app.use(
+      session({
+        secret: TOKEN_ENCRYPT,
+        resave: true,
+        saveUninitialized: true,
+        cookie: {
+          maxAge: 2 * 60 * 60 * 1000, // 1 hour
+          httpOnly: true,
+          //secure: false, // Uncomment this line to enforce HTTPS protocol.
+          sameSite: true,
+        },
+      })
+    );
+    */
+
+    /*
     this.app.all("/pgapi*", async (req, res) => {
       fnAccessPoint(req, res, custom_response);
     });
-    this.app.use(passport.initialize());
+    */
+    //console.log(this.AccessPoint.Middleware);
 
-    require("./class/Passport");
+    this.app.use((req, res, next) => {
+      this.AccessPoint.Middleware(req, res, next);
+    }); //this.app.use(passport.initialize());
+    //require("./class/Passport");
 
     this.app.use(_routes.default);
     this.app.use((0, _compression.default)({
@@ -139,6 +153,7 @@ class Server extends EventEmitter {
     }
 
     if (httpServer) {
+      //      httpServer.timeout = EXPRESSJS_SERVER_TIMEOUT||120000;
       this.socketio = SocketIO(httpServer);
       httpServer.on("error", e => {
         console.trace(e);
@@ -150,7 +165,13 @@ class Server extends EventEmitter {
           console.log("App listening on port " + PORT);
         }
       });
-      httpServer.setTimeout(EXPRESSJS_SERVER_TIMEOUT || 1000 * 60 * 5); // Para 5 minutos
+      let rto = 1000 * 60 * 5;
+
+      if (EXPRESSJS_SERVER_TIMEOUT && Number(EXPRESSJS_SERVER_TIMEOUT) > 1000) {
+        rto = Number(EXPRESSJS_SERVER_TIMEOUT);
+      }
+
+      httpServer.setTimeout(rto); // Para 5 minutos
     }
   }
 

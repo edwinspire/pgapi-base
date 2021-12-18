@@ -51,6 +51,7 @@
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
+    <!-- svelte-ignore a11y-missing-attribute -->
     <a class="navbar-item">
       <span class="icon">
         <img
