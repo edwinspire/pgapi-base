@@ -21,29 +21,37 @@ export class Response {
   }
 
   static SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
+    console.log("SOAPGenericClient", wsdl, SOAPFunctionName, RequestArgs);
     return new Promise((resolve, reject) => {
-      if (wsdl && wsdl.length > 0) {
-        if (SOAPFunctionName && SOAPFunctionName.length > 0) {
-          soap.createClient(wsdl, (err, client) => {
-            if (err) {
-              reject(err);
-            } else {
-              client[SOAPFunctionName](RequestArgs, (err, result,  rawResponse, soapHeader, rawRequest) => {
-                //console.log(rawRequest);
-                if (err) {
-                  console.trace(err);
-                  reject(err);
-                } else {
-                  resolve(result);
-                }
-              });
-            }
-          });
+      try {
+        if (wsdl && wsdl.length > 0) {
+          if (SOAPFunctionName && SOAPFunctionName.length > 0) {
+            soap.createClient(wsdl, (err, client) => {
+              if (err) {
+                reject(err);
+              } else {
+                client[SOAPFunctionName](
+                  RequestArgs,
+                  (err, result, rawResponse, soapHeader, rawRequest) => {
+                    //console.log(rawRequest);
+                    if (err) {
+                      console.trace(err);
+                      reject(err);
+                    } else {
+                      resolve(result);
+                    }
+                  }
+                );
+              }
+            });
+          } else {
+            reject({ error: "No se ha definido la funcion SOAP" });
+          }
         } else {
-          reject({ error: "No se ha definido la funcion SOAP" });
+          reject({ error: "No se ha definido la URL del WSDL" });
         }
-      } else {
-        reject({ error: "No se ha definido la URL del WSDL" });
+      } catch (error) {
+        reject({ error: error.message });
       }
     });
   }
@@ -65,7 +73,6 @@ export class Response {
     }
   }
 
-  
   async DriverMsSql(pgdata, req, res) {
     try {
       let query = pgdata.query || req.body.query;
