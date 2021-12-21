@@ -28,7 +28,8 @@ export class Response {
             if (err) {
               reject(err);
             } else {
-              client[SOAPFunctionName](RequestArgs, (err, result) => {
+              client[SOAPFunctionName](RequestArgs, (err, result,  rawResponse, soapHeader, rawRequest) => {
+                //console.log(rawRequest);
                 if (err) {
                   console.trace(err);
                   reject(err);
@@ -49,18 +50,18 @@ export class Response {
 
   async DriverGenericSOAP(pgdata, req, res) {
     let wsdl = pgdata.wsdl || req.body.wsdl;
-    let args = pgdata.args || req.body.args || {};
+    let args_data = pgdata.args || req.body.args || {};
     let Soapfunction = pgdata.SOAPFunction || req.body.SOAPFunction || {};
 
     try {
       let soap_response = await Response.SOAPGenericClient(
         wsdl,
         Soapfunction,
-        args
+        args_data
       );
       res.status(200).json(soap_response);
     } catch (error) {
-      res.status(500).json(error);
+      res.status(500).json(error.message);
     }
   }
 
