@@ -20,23 +20,30 @@ export class Response {
       .json({ ok: "Personalizado y llamado por pgapi", data: pgdata });
   }
 
-  SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
+  static SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
     console.log("SOAPGenericClient", wsdl, SOAPFunctionName, RequestArgs);
     return new Promise((resolve, reject) => {
       try {
         if (wsdl && wsdl.length > 0) {
           if (SOAPFunctionName && SOAPFunctionName.length > 0) {
+            console.log("SOAPGenericClient createClient", wsdl);
             soap.createClient(wsdl, (err, client) => {
+
+              console.log("SOAPGenericClient createClient Error", err);
+              console.log("SOAPGenericClient createClient Error", client);
               if (err) {
                 reject(err);
               } else {
+                console.log("SOAPGenericClient createClient SOAPFunctionName: ", SOAPFunctionName, client.describe());
+
                 client[SOAPFunctionName](
                   RequestArgs,
-                  (err, result, rawResponse, soapHeader, rawRequest) => {
+                  (err1, result) => {
+                    console.log("SOAPGenericClient createClient SOAPFunctionName Terminada: ", err1);
                     //console.log(rawRequest);
-                    if (err) {
-                      console.trace(err);
-                      reject(err);
+                    if (err1) {
+                      console.trace(err1);
+                      reject(err1);
                     } else {
                       resolve(result);
                     }
