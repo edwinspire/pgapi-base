@@ -39,7 +39,7 @@
   "dependencies": {
     "@babel/runtime": "^7.15.4",
     "@edwinspire/sequential-promises": "git+https://github.com/edwinspire/sequential-promises.git",
-    "@edwinspire/svelte-component-table": "git+https://github.com/edwinspire/svelte-component-table.git",
+    "@edwinspire/svelte-components": "git+https://github.com/edwinspire/svelte-components.git",
     "@edwinspire/tedious-mssql": "git+https://github.com/edwinspire/tedious-mssql.git",
     "@edwinspire/universal-fetch": "git+https://github.com/edwinspire/universal-fetch.git",
     "body-parser": "^1.19.0",

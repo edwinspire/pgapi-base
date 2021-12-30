@@ -1,7 +1,7 @@
 <script>
   //  import { FetchData } from "@edwinspire/fetch/FetchData.js";
   const FetchData = require("@edwinspire/universal-fetch");
-  import Table from "@edwinspire/svelte-component-table/src";
+  import {Table} from "@edwinspire/svelte-components/src";
   import EndpointForm from "./EndpointForm";
   import MethodForm from "./MethodForm";
 
