@@ -17,8 +17,8 @@ export class socketIoClient extends EventEmitter {
     });
 
     socketc.on("pg-change-table", (c) => {
-      console.log("pg-change-table", c, changedTables, $changedTables);
-      changedTables.set(c);
+      console.log("pg-change-table", c, storeChangedTables);
+      storeChangedTables.set(c);
       /*
         changedTables.subscribe((data) => {
   
