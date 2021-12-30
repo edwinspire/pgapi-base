@@ -6,17 +6,18 @@ const storeChangedTables = writable({});
 export class socketIoClient extends EventEmitter {
   constructor() {
     super();
+    this.socketio = {};
   }
 
   connect() {
     let url_wwebsocket = window.location.protocol + "//" + window.location.host;
     console.log(url_wwebsocket);
-    const socketc = sioc.io(url_wwebsocket);
-    socketc.on("connect", function (c) {
+    this.socketio = sioc.io(url_wwebsocket);
+    this.socketio.on("connect", function (c) {
       console.log("connected", c);
     });
 
-    socketc.on("pg-change-table", (c) => {
+    this.socketio.on("pg-change-table", (c) => {
       console.log("pg-change-table", c, storeChangedTables);
       storeChangedTables.set(c);
       /*
@@ -26,5 +27,6 @@ export class socketIoClient extends EventEmitter {
         });
         */
     });
+    return this.socketio;
   }
 }
