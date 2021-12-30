@@ -26,13 +26,13 @@ export class Server extends EventEmitter {
     this.credentials = credentials;
     this.cluster = cluster;
     this.AccessPoint = new AccessPoint(custom_response);
-
+/*
     if (listen_notification_list && listen_notification_list.length > 0) {
       new pgListen(listen_notification_list).on("notification", (notify) => {
         this.emit("pgNotify", notify);
       });
     }
-
+*/
     this.token = new Token();
     this.token.deleteAll();
     this.socketio = () => {};
@@ -110,6 +110,14 @@ export class Server extends EventEmitter {
     if (httpServer) {
       //      httpServer.timeout = EXPRESSJS_SERVER_TIMEOUT||120000;
       this.socketio = SocketIO(httpServer);
+
+      if (listen_notification_list && listen_notification_list.length > 0) {
+        new pgListen(listen_notification_list).on("notification", (notify) => {
+          this.emit("pgNotify", notify);
+          this.socketio.emit("pg-change-table", notify.payload);
+        });
+      }
+
 
       httpServer.on("error", (e) => {
         console.trace(e);
