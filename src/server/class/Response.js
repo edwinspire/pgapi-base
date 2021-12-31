@@ -26,29 +26,25 @@ export class Response {
       try {
         if (wsdl && wsdl.length > 0) {
           if (SOAPFunctionName && SOAPFunctionName.length > 0) {
-      //      console.log("SOAPGenericClient createClient", wsdl);
+            //      console.log("SOAPGenericClient createClient", wsdl);
             soap.createClient(wsdl, (err, client) => {
-
-        //      console.log("SOAPGenericClient createClient Error", err);
-          //    console.log("SOAPGenericClient createClient Error", client);
+              //      console.log("SOAPGenericClient createClient Error", err);
+              //    console.log("SOAPGenericClient createClient Error", client);
               if (err) {
                 reject(err);
               } else {
-            //    console.log("SOAPGenericClient createClient SOAPFunctionName: ", SOAPFunctionName, client.describe());
+                //    console.log("SOAPGenericClient createClient SOAPFunctionName: ", SOAPFunctionName, client.describe());
 
-                client[SOAPFunctionName](
-                  RequestArgs,
-                  (err1, result) => {
-              //      console.log("SOAPGenericClient createClient SOAPFunctionName Terminada: ", err1);
-                    //console.log(rawRequest);
-                    if (err1) {
-                      console.trace(err1);
-                      reject(err1);
-                    } else {
-                      resolve(result);
-                    }
+                client[SOAPFunctionName](RequestArgs, (err1, result) => {
+                  //      console.log("SOAPGenericClient createClient SOAPFunctionName Terminada: ", err1);
+                  //console.log(rawRequest);
+                  if (err1) {
+                    console.trace(err1);
+                    reject(err1);
+                  } else {
+                    resolve(result);
                   }
-                );
+                });
               }
             });
           } else {
