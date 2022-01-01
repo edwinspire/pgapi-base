@@ -17,7 +17,8 @@ const {
   PORT,
   NODE_ENV,
   TOKEN_ENCRYPT,
-  EXPRESSJS_SERVER_TIMEOUT
+  EXPRESSJS_SERVER_TIMEOUT,
+  PGAPI_DEBUG
 } = process.env;
 const dev = NODE_ENV === "development";
 
