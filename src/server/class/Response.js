@@ -10,8 +10,8 @@ export class Response {
     try {
       this[function_name](pgdata, req, res);
     } catch (error) {
-      console.trace(error);
-      res.status(500).json({ error: error, function_name: function_name });
+      //console.trace(error);
+      res.status(500).json({ error: error.message, function_name: function_name });
     }
   }
   Test(pgdata, req, res) {
@@ -39,7 +39,7 @@ export class Response {
                   //      console.log("SOAPGenericClient createClient SOAPFunctionName Terminada: ", err1);
                   //console.log(rawRequest);
                   if (err1) {
-                    console.trace(err1);
+                    //console.trace(err1);
                     reject(err1);
                   } else {
                     resolve(result);
@@ -88,8 +88,8 @@ export class Response {
       const result = await sql.execSql(query, query_params);
       res.status(200).json(result.rows);
     } catch (err) {
-      console.log(err);
-      res.status(500).json(err);
+      //console.log(err);
+      res.status(500).json({ error: err.message });
     }
   }
 
