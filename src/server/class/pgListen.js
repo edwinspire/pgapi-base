@@ -11,28 +11,15 @@ export class pgListen extends EventEmitter {
   constructor(listen_notification_list) {
     super();
     this.isConnected = false;
+    this.isConnecting = false;
+    this.client = new Client(this.clientParams());
+
     if (listen_notification_list && listen_notification_list.length > 0) {
       let events = listen_notification_list.map((event) => {
         return 'LISTEN "' + event + '";';
       });
 
       this.query = events.join(" ");
-      this.client = new Client(this.clientParams());
-
-      this.client.on("error", (err) => {
-        console.trace(err.stack);
-      });
-
-      this.client.on("end", () => {
-        console.log("END LISTEN");
-        this.isConnected = false;
-        //        this.connect();
-      });
-
-      this.client.on("notification", (not) => {
-        this.isConnected = true;
-        this.emit("notification", not);
-      });
 
       //this.connect();
       setInterval(() => {
@@ -60,22 +47,39 @@ export class pgListen extends EventEmitter {
     return pgClientParams;
   }
 
-  _connect() {
-    console.log("pgListen: connetion check", this.isConnected);
-    if (!this.isConnected) {
-      console.log("pgListen: conneting...");
-      this.client.connect();
+  async _connect() {
+    if (!this.isConnected && !this.isConnecting) {
+      this.isConnecting = true;
+      console.log("pgListen: connecting", this.isConnecting);
+      try {
+        delete this.client;
+        this.client = new Client(this.clientParams());
 
-      this.client
-        .query(this.query)
-        .then((result) => {
-          console.log("START LISTEN");
-          this.isConnected = true;
-        })
-        .catch((e) => {
-          console.trace(e.stack);
-          this.client.end();
+        this.client.on("error", (err) => {
+          console.trace(err.stack);
         });
+
+        this.client.on("end", () => {
+          console.log("END LISTEN");
+          this.isConnected = false;
+        });
+
+        this.client.on("notification", (not) => {
+          this.isConnected = true;
+          this.emit("notification", not);
+        });
+
+        await this.client.connect();
+        await this.client.query(this.query);
+        console.log("pgListen: connected");
+        this.isConnected = true;
+        this.isConnecting = false;
+      } catch (error) {
+        this.isConnected = false;
+        this.isConnecting = false;
+        console.trace(error.stack);
+        this.client.end();
+      }
     }
   }
 }
