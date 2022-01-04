@@ -98,7 +98,10 @@ export class Server extends EventEmitter {
           "notification",
           (notify) => {
             this.emit("pgNotify", notify);
-            this.socketio.emit("pg-change-table", notify.payload);
+
+            if (notify.channel.includes("onchange-")) {
+              this.socketio.emit("pg-change-table", notify.payload);
+            }
           }
         );
       }
