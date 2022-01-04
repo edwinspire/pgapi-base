@@ -11,7 +11,9 @@ export class Response {
       this[function_name](pgdata, req, res);
     } catch (error) {
       //console.trace(error);
-      res.status(500).json({ error: error.message, function_name: function_name });
+      res
+        .status(500)
+        .json({ error: error.message, function_name: function_name });
     }
   }
   Test(pgdata, req, res) {
@@ -31,7 +33,7 @@ export class Response {
               //      console.log("SOAPGenericClient createClient Error", err);
               //    console.log("SOAPGenericClient createClient Error", client);
               if (err) {
-                reject(err);
+                reject({ error: err });
               } else {
                 //    console.log("SOAPGenericClient createClient SOAPFunctionName: ", SOAPFunctionName, client.describe());
 
@@ -40,7 +42,7 @@ export class Response {
                   //console.log(rawRequest);
                   if (err1) {
                     //console.trace(err1);
-                    reject(err1);
+                    reject({ error: err1 });
                   } else {
                     resolve(result);
                   }
