@@ -124,7 +124,7 @@ export class Server extends EventEmitter {
       if (EXPRESSJS_SERVER_TIMEOUT && Number(EXPRESSJS_SERVER_TIMEOUT) > 1000) {
         rto = Number(EXPRESSJS_SERVER_TIMEOUT);
       }
-
+      console.log("EXPRESSJS_SERVER_TIMEOUT: " + EXPRESSJS_SERVER_TIMEOUT);
       httpServer.setTimeout(rto); // Para 5 minutos
     }
   }
