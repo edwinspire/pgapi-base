@@ -1,7 +1,7 @@
 // Modulo que realiza las conexiones a PostgreSQL
 const dotenv = require("dotenv");
 const { Pool } = require('pg')
-const {DATABASE_URL, PG_WITH_SSL_REJECTUNAUTHORIZED_FALSE} = process.env;
+const {DATABASE_URL, PG_WITH_SSL_REJECTUNAUTHORIZED_FALSE, PG_EXPRESS_MAX_CONNECTIONS} = process.env;
 
 let pgClientParams = {connectionString: DATABASE_URL,    
   // number of milliseconds a client must sit idle in the pool and not be checked out
@@ -10,7 +10,7 @@ let pgClientParams = {connectionString: DATABASE_URL,
   idleTimeoutMillis: 500,
   // maximum number of clients the pool should contain
   // by default this is set to 10.
-  max: 80,
+  max: PG_EXPRESS_MAX_CONNECTIONS||80,
 //  ssl: {
 //    rejectUnauthorized: false
 //  }
