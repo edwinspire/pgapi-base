@@ -24,9 +24,8 @@ export class AccessPoint {
       };
 
       let respg = await db.query(query);
-      //console.log('>>>>>> _execFunctionMethod', pgAPI, data, respg);
+
       if (respg.rows && respg.rows.length > 0) {
-        //console.log('fn_method >>>>>> ',respg.rows[0].fn_method);
         return respg.rows[0].fn_method;
       } else {
         return [];
@@ -66,7 +65,7 @@ export class AccessPoint {
           values: [JSON.stringify(idata)],
         };
         let respgapi = await db.query(query);
-        //console.log(respgapi);
+
         if (
           respgapi &&
           respgapi.rows &&
@@ -85,7 +84,7 @@ export class AccessPoint {
             idata.body = req.body;
             idata.query = req.query;
             let rexec = await this._execFunctionMethod(r, idata);
-            //console.log('rexec>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ', r, rexec);
+
             if (rexec && rexec.EXECUTE) {
               this.CustomResponse.execute(rexec.EXECUTE, rexec, req, res);
             } else {
