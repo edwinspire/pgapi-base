@@ -15,14 +15,26 @@ export class AccessPoint {
     }
   }
 
-  async _pgAPIEndPoints() {
-    let query = {
-      name: 'api.view_endpoints_methods',
-      text: `SELECT * FROM api.view_endpoints_methods WHERE endpoint_enabled = TRUE AND method_enabled = TRUE;`,
-      values: [],
-    };
-    let respg = await db.query(query);
-    console.log(idata, respg.rows);
+  async _execFunctionMethod(pgAPI, data) {
+    try {
+      let query = {
+        //name: "execFunctionMethod",
+        text: `SELECT api.${pgAPI.fn_method}($1::JSON) as fn_method;`,
+        values: [JSON.stringify(data)],
+      };
+
+      let respg = await db.query(query);
+      //console.log('>>>>>> _execFunctionMethod', pgAPI, data, respg);
+      if (respg.rows && respg.rows.length > 0) {
+        //console.log('fn_method >>>>>> ',respg.rows[0].fn_method);
+        return respg.rows[0].fn_method;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log(error.message);
+      return [];
+    }
   }
 
   async Middleware(req, res, next) {
@@ -30,7 +42,6 @@ export class AccessPoint {
       next();
     } else {
       try {
-
         let user = await this.TokenDB.getUserFromRequest(req);
 
         const myURL = new URL("https://" + req.hostname + req.originalUrl);
@@ -49,21 +60,38 @@ export class AccessPoint {
           //  token: toke_user
         };
 
-// Obtener el endpoind
-
-
-
         let query = {
           name: idata.method,
           text: `SELECT api.fn_access_point($1::JSON)`,
           values: [JSON.stringify(idata)],
         };
-        let respg = await db.query(query);
-        //console.log(idata, respg.rows);
-        if (respg.rows.length > 0) {
-          let r = respg.rows[0].fn_access_point;
+        let respgapi = await db.query(query);
+        //console.log(respgapi);
+        if (
+          respgapi &&
+          respgapi.rows &&
+          respgapi.rows.length > 0 &&
+          respgapi.rows[0] &&
+          respgapi.rows[0].fn_access_point
+        ) {
+          let r = respgapi.rows[0].fn_access_point.endpoint;
 
-          if (r.status == "401") {
+          if (!r.endpoint_enabled) {
+            res.status(404).json(r.data);
+          } else if (
+            r.ispublic ||
+            (!r.ispublic && idata.user && idata.user.username)
+          ) {
+            idata.body = req.body;
+            idata.query = req.query;
+            let rexec = await this._execFunctionMethod(r, idata);
+            //console.log('rexec>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ', r, rexec);
+            if (rexec && rexec.EXECUTE) {
+              this.CustomResponse.execute(rexec.EXECUTE, rexec, req, res);
+            } else {
+              res.status(200).json(rexec);
+            }
+          } else if (!r.ispublic && !(idata.user && idata.user.username)) {
             res.cookie(
               "TOKEN_USER",
               {},
@@ -71,12 +99,9 @@ export class AccessPoint {
                 expire: 1,
               }
             );
-
             res.status(401).location("/").end();
-          } else if (r.data && r.data.EXECUTE) {
-            this.CustomResponse.execute(r.data.EXECUTE, r.data, req, res);
           } else {
-            res.status(r.status).json(r.data);
+            res.status(204).json(r.data);
           }
         } else {
           res.status(204).json([]);
