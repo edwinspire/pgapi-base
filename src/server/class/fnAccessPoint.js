@@ -7,18 +7,30 @@ export class AccessPoint {
     if (!(custom_response.prototype instanceof Response)) {
       throw new Error("custom_response must be instance of Response");
     }
-
+    this.pgAPIEndPoints = [];
     this.CustomResponse = new Response();
     this.TokenDB = new Token();
     if (custom_response) {
       this.CustomResponse = new custom_response();
     }
   }
+
+  async _pgAPIEndPoints() {
+    let query = {
+      name: 'api.view_endpoints_methods',
+      text: `SELECT * FROM api.view_endpoints_methods WHERE endpoint_enabled = TRUE AND method_enabled = TRUE;`,
+      values: [],
+    };
+    let respg = await db.query(query);
+    console.log(idata, respg.rows);
+  }
+
   async Middleware(req, res, next) {
     if (!req.originalUrl.startsWith("/pgapi")) {
       next();
     } else {
       try {
+
         let user = await this.TokenDB.getUserFromRequest(req);
 
         const myURL = new URL("https://" + req.hostname + req.originalUrl);
@@ -36,6 +48,10 @@ export class AccessPoint {
           user: user,
           //  token: toke_user
         };
+
+// Obtener el endpoind
+
+
 
         let query = {
           name: idata.method,
