@@ -27,18 +27,19 @@ export class Response {
   }
 
   static async SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
-    //console.log("SOAPGenericClient", wsdl, SOAPFunctionName, RequestArgs);
+    console.log("SOAPGenericClient", wsdl, SOAPFunctionName, RequestArgs);
     
       try {
         if (wsdl && wsdl.length > 0) {
           if (SOAPFunctionName && SOAPFunctionName.length > 0) {
             //      console.log("SOAPGenericClient createClient", wsdl);
-           console.log("SOAPGenericClient createClient", wsdl);
+  //         console.log("SOAPGenericClient createClient", wsdl);
 
   let client = await soap.createClientAsync(wsdl);
-  let result = await client[SOAPFunctionName](RequestArgs);
+  //console.log("SOAPGenericClient createClient", client);
+  let result =  await client[SOAPFunctionName+'Async'](RequestArgs);
   let r = await result;
-  return r;
+  return r[0];
 
           } else {
             return { error: "No se ha definido la funcion SOAP" };
