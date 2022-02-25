@@ -26,7 +26,7 @@ export class Response {
       .json({ ok: "Personalizado y llamado por pgapi", data: pgdata });
   }
 
-  async static SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
+  static async SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
     //console.log("SOAPGenericClient", wsdl, SOAPFunctionName, RequestArgs);
     
       try {
