@@ -3,9 +3,7 @@ import { Token } from "./Tokendb";
 const soap = require("soap");
 const TediousMssql = require("@edwinspire/tedious-mssql");
 
-const {
-DEGUB_MODE
-} = process.env;
+const { DEGUB_MODE } = process.env;
 
 export class Response {
   constructor() {}
@@ -26,46 +24,66 @@ export class Response {
       .json({ ok: "Personalizado y llamado por pgapi", data: pgdata });
   }
 
-  static async SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
-    console.log("SOAPGenericClient", wsdl, SOAPFunctionName, RequestArgs);
-    
-      try {
-        if (wsdl && wsdl.length > 0) {
-          if (SOAPFunctionName && SOAPFunctionName.length > 0) {
-            //      console.log("SOAPGenericClient createClient", wsdl);
-  //         console.log("SOAPGenericClient createClient", wsdl);
-
-  let client = await soap.createClientAsync(wsdl);
-  //console.log("SOAPGenericClient createClient", client);
-  let result =  await client[SOAPFunctionName+'Async'](RequestArgs);
-  let r = await result;
-  return r[0];
-
-          } else {
-            return { error: "No se ha definido la funcion SOAP" };
-          }
-        } else {
-          return { error: "No se ha definido la URL del WSDL" };
-        }
-      } catch (error) {
-        console.trace(error);
-        return { error: error.message };
-      }
-
-  }
-
-
-  async DriverGenericSOAP(pgdata, req, res) {
-    let wsdl = pgdata.wsdl || req.body.wsdl;
-    let args_data = pgdata.args || req.body.args || {};
-    let Soapfunction = pgdata.SOAPFunction || req.body.SOAPFunction || {};
+  //static async SOAPGenericClient(wsdl, SOAPFunctionName, RequestArgs) {
+  static async SOAPGenericClient(SOAPParameters) {
+    console.log("SOAPGenericClient", SOAPParameters);
 
     try {
-      let soap_response = await Response.SOAPGenericClient(
-        wsdl,
-        Soapfunction,
-        args_data
-      );
+      if (
+        SOAPParameters &&
+        SOAPParameters.wsdl &&
+        SOAPParameters.wsdl.length > 0
+      ) {
+        if (
+          SOAPParameters.FunctionName &&
+          SOAPParameters.FunctionName.length > 0
+        ) {
+          //      console.log("SOAPGenericClient createClient", wsdl);
+          //         console.log("SOAPGenericClient createClient", wsdl);
+
+          let client = await soap.createClientAsync(SOAPParameters.wsdl);
+
+          if (
+            SOAPParameters.BasicAuthSecurity &&
+            SOAPParameters.BasicAuthSecurity.User
+          ) {
+            client.setSecurity(
+              new soap.BasicAuthSecurity(
+                SOAPParameters.BasicAuthSecurity.User,
+                SOAPParameters.BasicAuthSecurity.Pasword
+              )
+            );
+          }
+
+          //console.log("SOAPGenericClient createClient", client);
+          let result = await client[SOAPParameters.FunctionName + "Async"](
+            SOAPParameters.RequestArgs
+          );
+          let r = await result;
+          return r[0];
+        } else {
+          return { error: "No se ha definido la funcion SOAP" };
+        }
+      } else {
+        return { error: "No se ha definido la URL del WSDL" };
+      }
+    } catch (error) {
+      console.trace(error);
+      return { error: error.message };
+    }
+  }
+
+  async DriverGenericSOAP(pgdata, req, res) {
+    //    let wsdl = pgdata.wsdl || req.body.wsdl || pgdata.SOAP.wsdl || req.body.SOAP.wsdl;
+    let args_data = pgdata.args || req.body.args || {};
+    /*
+    let Soapfunction = pgdata.SOAPFunction || pgdata.SOAP.Function || req.body.SOAPFunction || req.body.SOAP.Function || {};
+*/
+    let SOAPParameters = pgdata.SOAP || req.body.SOAP || {};
+    SOAPParameters.RequestArgs = args_data;
+
+    try {
+      let soap_response = await Response.SOAPGenericClient(SOAPParameters);
       res.status(200).json(soap_response);
     } catch (error) {
       res.status(500).json(error.message);
