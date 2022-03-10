@@ -50,7 +50,7 @@ export class Response {
             client.setSecurity(
               new soap.BasicAuthSecurity(
                 SOAPParameters.BasicAuthSecurity.User,
-                SOAPParameters.BasicAuthSecurity.Pasword
+                SOAPParameters.BasicAuthSecurity.Password
               )
             );
           }
@@ -60,6 +60,7 @@ export class Response {
             SOAPParameters.RequestArgs
           );
           let r = await result;
+          console.log("SOAPGenericClient result", r);
           return r[0];
         } else {
           return { error: "No se ha definido la funcion SOAP" };
