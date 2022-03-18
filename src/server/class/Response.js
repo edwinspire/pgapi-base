@@ -2,6 +2,7 @@
 import { Token } from "./Tokendb";
 const soap = require("soap");
 const TediousMssql = require("@edwinspire/tedious-mssql");
+const PromiseUtils = require("@edwinspire/sequential-promises");
 
 const { DEGUB_MODE } = process.env;
 
@@ -88,6 +89,41 @@ export class Response {
       res.status(200).json(soap_response);
     } catch (error) {
       res.status(500).json(error.message);
+    }
+  }
+
+  async DriverMsSqlMultiRequest(pgdata, req, res) {
+    try {
+      let NumberThreads = pgdata.NumberThreads || req.body.NumberThreads;
+      let paramsQueries = pgdata.paramsQueries || req.body.paramsQueries;
+
+      let rDoc = await PromiseUtils.ByBlocks(
+        async (paramsQuery) => {
+          try {
+            let sql = new TediousMssql(paramsQuery.connection_params);
+            const result = await sql.execSql(
+              paramsQuery.query,
+              paramsQuery.params
+            );
+            res.status(200).json(result.rows);
+          } catch (error) {
+            return {
+              query: paramsQuery,
+              error: error.message,
+            };
+          }
+        },
+        paramsQueries,
+        NumberThreads
+      );
+
+      let data = rDoc.map((x) => x.value);
+
+      console.log(data);
+      res.status(200).json(data);
+    } catch (err) {
+      //console.log(err);
+      res.status(500).json({ error: err.message });
     }
   }
 
