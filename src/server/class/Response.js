@@ -3,6 +3,7 @@ import { Token } from "./Tokendb";
 const soap = require("soap");
 const TediousMssql = require("@edwinspire/tedious-mssql");
 const PromiseUtils = require("@edwinspire/sequential-promises");
+const uFetch = require("@edwinspire/universal-fetch");
 
 const { DEGUB_MODE } = process.env;
 
@@ -119,6 +120,41 @@ export class Response {
 
       let data = rDoc.map((x) => x.value);
 
+      console.log(data);
+      res.status(200).json(data);
+    } catch (err) {
+      //console.log(err);
+      res.status(500).json({ error: err.message });
+    }
+  }
+
+  async DriverFetchMultiRequest(pgdata, req, res) {
+    try {
+      let NumberThreads = pgdata.NumberThreads || req.body.NumberThreads;
+      let paramsRequests = pgdata.paramsRequests || req.body.paramsRequests;
+
+      let rDoc = await PromiseUtils.ByBlocks(
+        async (paramsRequest) => {
+          try {
+            const FData = new uFetch();
+            let resp = await FData[paramsRequest.Method](
+              paramsRequest.Url,
+              paramsRequest.Params,
+              req.headers
+            );
+            return await resp.json();
+          } catch (error) {
+            return {
+              request: paramsRequest,
+              error: error.message,
+            };
+          }
+        },
+        paramsRequests,
+        NumberThreads
+      );
+
+      let data = rDoc.map((x) => x.value);
       console.log(data);
       res.status(200).json(data);
     } catch (err) {
