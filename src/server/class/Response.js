@@ -130,8 +130,10 @@ export class Response {
 
   async DriverFetchMultiRequest(pgdata, req, res) {
     try {
-      let NumberThreads = pgdata.NumberThreads || req.body.NumberThreads;
+      let NumberThreads = pgdata.NumberThreads || req.body.NumberThreads || 5;
       let paramsRequests = pgdata.paramsRequests || req.body.paramsRequests;
+
+      console.log("DriverFetchMultiRequest", NumberThreads, paramsRequests);
 
       let rDoc = await PromiseUtils.ByBlocks(
         async (paramsRequest) => {
