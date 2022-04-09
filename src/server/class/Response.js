@@ -144,7 +144,9 @@ export class Response {
               paramsRequest.Params,
               req.headers
             );
-            return await resp.json();
+            let r = await resp.json();
+            console.log("DriverFetchMultiRequest 1", r);
+            return r;
           } catch (error) {
             return {
               request: paramsRequest,
