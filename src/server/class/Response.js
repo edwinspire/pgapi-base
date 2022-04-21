@@ -95,8 +95,8 @@ export class Response {
 
   async DriverMsSqlMultiRequest(pgdata, req, res) {
     try {
-      let NumberThreads = pgdata.NumberThreads || req.body.NumberThreads;
-      let paramsQueries = pgdata.paramsQueries || req.body.paramsQueries;
+      let numberThreads = pgdata.numberThreads || req.body.numberThreads;
+      let requests = pgdata.requests || req.body.requests;
 
       let rDoc = await PromiseUtils.ByBlocks(
         async (paramsQuery) => {
@@ -106,21 +106,21 @@ export class Response {
               paramsQuery.query,
               paramsQuery.params
             );
-            res.status(200).json(result.rows);
+
+            return result.rows;
           } catch (error) {
+            console.trace(error);
             return {
               query: paramsQuery,
               error: error.message,
             };
           }
         },
-        paramsQueries,
-        NumberThreads
+        requests,
+        numberThreads
       );
 
       let data = rDoc.map((x) => x.value);
-
-      console.log(data);
       res.status(200).json(data);
     } catch (err) {
       //console.log(err);
@@ -157,7 +157,7 @@ export class Response {
 
             return r;
           } catch (error) {
-            console.trace("DriverFetchMultiRequest => 2", error);
+            console.log("DriverFetchMultiRequest => 2", error);
             return {
               request: paramsRequest,
               error: error.message,
