@@ -130,24 +130,34 @@ export class Response {
 
   async DriverFetchMultiRequest(pgdata, req, res) {
     try {
-      let NumberThreads = pgdata.NumberThreads || req.body.NumberThreads || 5;
-      let paramsRequests = pgdata.paramsRequests || req.body.paramsRequests;
+      let NumberThreads = pgdata.numberThreads || req.body.numberThreads || 5;
+      let paramsRequests = pgdata.requests || req.body.requests || [];
 
-      console.log("DriverFetchMultiRequest", NumberThreads, paramsRequests);
+      let req_headers = { ...req.headers };
+      delete req_headers["content-length"];
+      delete req_headers["host"];
+      delete req_headers["connection"];
 
       let rDoc = await PromiseUtils.ByBlocks(
         async (paramsRequest) => {
+          let init = {
+            headers: paramsRequest.headers || req_headers,
+            body: paramsRequest.body,
+            query: paramsRequest.query,
+          };
+
           try {
             const FData = new uFetch();
-            let resp = await FData[paramsRequest.Method](
-              paramsRequest.Url,
-              paramsRequest.Params,
-              req.headers
+            let resp = await FData[paramsRequest.method](
+              paramsRequest.url,
+              init
             );
+
             let r = await resp.json();
-            console.log("DriverFetchMultiRequest 1", r);
+
             return r;
           } catch (error) {
+            console.trace("DriverFetchMultiRequest => 2", error);
             return {
               request: paramsRequest,
               error: error.message,
@@ -159,10 +169,10 @@ export class Response {
       );
 
       let data = rDoc.map((x) => x.value);
-      console.log(data);
+      //console.log(data);
       res.status(200).json(data);
     } catch (err) {
-      //console.log(err);
+      //console.trace(err);
       res.status(500).json({ error: err.message });
     }
   }
