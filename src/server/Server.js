@@ -13,7 +13,6 @@ const cookieParser = require("cookie-parser");
 const { pgListen } = require("./class/pgListen");
 const { SocketIO } = require("./class/SocketIO");
 const { Token } = require("./class/Tokendb");
-//const { Telegraf } = require("./class/Telegraf");
 var bodyParser = require("body-parser");
 
 export class Server extends EventEmitter {
