@@ -11,7 +11,8 @@ var methodOverride = require("method-override");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const { pgListen } = require("./class/pgListen");
-const { SocketIO } = require("./class/SocketIO");
+const { WebSocketPlugin } = require("./class/WebSocket");
+//const { SocketIO } = require("./class/SocketIO");
 const { Token } = require("./class/Tokendb");
 var bodyParser = require("body-parser");
 
@@ -19,7 +20,7 @@ export class Server extends EventEmitter {
   constructor({
     credentials,
     cluster,
-    listen_notification_list,
+    pg_listen_channel_list,
     custom_response,
     sapper,
   }) {
@@ -27,14 +28,17 @@ export class Server extends EventEmitter {
     this.credentials = credentials;
     this.cluster = cluster;
     this.AccessPoint = new AccessPoint(custom_response);
-    this.listen_notification_list = listen_notification_list;
+    this.pg_listen_channel_list = pg_listen_channel_list;
+    this.WebSocket = undefined;
+
     /*
-    if (listen_notification_list && listen_notification_list.length > 0) {
-      new pgListen(listen_notification_list).on("notification", (notify) => {
+    if (pg_listen_channel_list && pg_listen_channel_list.length > 0) {
+      new pgListen(pg_listen_channel_list).on("notification", (notify) => {
         this.emit("pgNotify", notify);
       });
     }
 */
+
     this.token = new Token();
     this.token.deleteAll();
     this.socketio = () => {};
@@ -86,23 +90,20 @@ export class Server extends EventEmitter {
     }
 
     if (httpServer) {
-      //      httpServer.timeout = EXPRESSJS_SERVER_TIMEOUT||120000;
-      this.socketio = SocketIO(httpServer);
 
+      // Se crea el servidor de websocket
+      this.WebSocket = new WebSocketPlugin(httpServer);
+
+      // Se capturan notificaciones de postgres si se ha configurado canales para escuchar 
       if (
-        this.listen_notification_list &&
-        this.listen_notification_list.length > 0
+        pg_listen_channel_list &&
+        Array.isArray(pg_listen_channel_list) &&
+        pg_listen_channel_list.length > 0
       ) {
-        new pgListen(this.listen_notification_list).on(
-          "notification",
-          (notify) => {
-            this.emit("pgNotify", notify);
-
-            if (notify.channel.includes("onchange-")) {
-              this.socketio.emit("pg-change-table", notify.payload);
-            }
-          }
-        );
+        new pgListen(pg_listen_channel_list).on("notification", (notify) => {
+          this.WebSocket.emit("pgNotify", notify);
+          this.emit("pgNotify", notify);
+        });
       }
 
       httpServer.on("error", (e) => {

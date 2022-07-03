@@ -8,14 +8,14 @@ const EventEmitter = require("events");
 const { Client } = require("pg");
 
 export class pgListen extends EventEmitter {
-  constructor(listen_notification_list) {
+  constructor(channel_list) {
     super();
     this.isConnected = false;
     this.isConnecting = false;
     this.client = new Client(this.clientParams());
 
-    if (listen_notification_list && listen_notification_list.length > 0) {
-      let events = listen_notification_list.map((event) => {
+    if (channel_list && Array.isArray(channel_list) && channel_list.length > 0) {
+      let events = channel_list.map((event) => {
         return 'LISTEN "' + event + '";';
       });
 
