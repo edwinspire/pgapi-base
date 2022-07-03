@@ -12,6 +12,7 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const { pgListen } = require("./class/pgListen");
 const { WebSocketPlugin } = require("./class/WebSocket");
+const { MqttPlugin } = require("./class/Mqtt");
 //const { SocketIO } = require("./class/SocketIO");
 const { Token } = require("./class/Tokendb");
 var bodyParser = require("body-parser");
@@ -31,6 +32,7 @@ export class Server extends EventEmitter {
     this.pg_listen_channel_list = pg_listen_channel_list;
     this.WebSocket = undefined;
 
+    console.log("pg_listen_channel_list",pg_listen_channel_list);
     /*
     if (pg_listen_channel_list && pg_listen_channel_list.length > 0) {
       new pgListen(pg_listen_channel_list).on("notification", (notify) => {
@@ -90,20 +92,38 @@ export class Server extends EventEmitter {
     }
 
     if (httpServer) {
-
       // Se crea el servidor de websocket
       this.WebSocket = new WebSocketPlugin(httpServer);
+      this.Mqtt = new MqttPlugin();
 
-      // Se capturan notificaciones de postgres si se ha configurado canales para escuchar 
+      /*
+      setInterval(() => {
+        this.WebSocket.broadcast("prueba", { hola: 1234, fecha: Date.now() });
+        this.Mqtt.send("prueba", { hola: 1234, fecha: Date.now() });
+      }, 5000);
+*/
+      // Se capturan notificaciones de postgres si se ha configurado canales para escuchar
+
+      console.log("this.pg_listen_channel_list",this.pg_listen_channel_list);
+
       if (
-        pg_listen_channel_list &&
-        Array.isArray(pg_listen_channel_list) &&
-        pg_listen_channel_list.length > 0
+        this.pg_listen_channel_list &&
+        Array.isArray(this.pg_listen_channel_list) &&
+        this.pg_listen_channel_list.length > 0
       ) {
-        new pgListen(pg_listen_channel_list).on("notification", (notify) => {
-          this.WebSocket.emit("pgNotify", notify);
-          this.emit("pgNotify", notify);
-        });
+        new pgListen(this.pg_listen_channel_list).on(
+          "notification",
+          (notify) => {
+            this.emit("pgNotify", notify);
+
+            if (this.WebSocket) {
+              this.WebSocket.broadcast("pgNotify", notify);
+            }
+            if (this.Mqtt) {
+              this.Mqtt.send("pgNotify", notify);
+            }
+          }
+        );
       }
 
       httpServer.on("error", (e) => {

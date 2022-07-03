@@ -35,8 +35,20 @@ export class MqttPlugin extends EventEmitter {
     });
   }
 
-  emit(topic, message) {
-    console.log("Publish", message.toString());
-    this.MqttClient.publish(topic, message);
+  convert_message(message) {
+    let msg;
+    let toffmsg = typeof message;
+
+    if (toffmsg === "string" || toffmsg === "null" || toffmsg === "undefined") {
+      msg = message;
+    } else {
+      msg = JSON.stringify(message);
+    }
+
+    return msg;
+  }
+
+  send(topic, message) {
+    this.MqttClient.publish(topic, this.convert_message(message));
   }
 }

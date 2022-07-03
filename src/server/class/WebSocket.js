@@ -1,13 +1,11 @@
-import ws from "ws";
+import WebSocket, { WebSocketServer } from "ws";
 const EventEmitter = require("events");
-//const { MQTT_SERVER } = process.env;
 
 export class WebSocketPlugin extends EventEmitter {
   constructor(http_server) {
     super();
-
-    this.WebSocket = new ws.Server({ noServer: true });
-    WebSocket.on("connection", (socket) => {
+    this.WebSocket = new WebSocketServer({ noServer: true });
+    this.WebSocket.on("connection", (socket) => {
       this.emit("connect", {});
       socket.on("message", (message) => {
         this.emit("message", message);
@@ -16,23 +14,35 @@ export class WebSocketPlugin extends EventEmitter {
     });
 
     http_server.on("upgrade", (request, socket, head) => {
+      /*
       this.WebSocket.handleUpgrade(request, socket, head, (socket) => {
         this.WebSocket.emit("connection", socket, request);
       });
+      */
+
+      if (request.url === "/websocket") {
+        this.WebSocket.handleUpgrade(request, socket, head, (socket) => {
+          this.WebSocket.emit("connection", socket, request);
+        });
+      } else {
+        socket.destroy();
+      }
     });
   }
 
-  emit(topic, message) {
-    console.log("emit", topic, message.toString());
-    let msg;
-    let toffmsg = typeof message;
+  convert_message(topic, message) {
+    return JSON.stringify({ topic: topic, message: message });
+  }
 
-    if (toffmsg === "string" || toffmsg === "null" || toffmsg === "undefined") {
-      msg = message;
-    } else {
-      msg = JSON.stringify(message);
-    }
+  send(client, topic, message) {
+    client.send(this.convert_message(topic, message));
+  }
 
-    this.WebSocket.send({ topic: topic, message: msg });
+  broadcast(topic, message) {
+    this.WebSocket.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        this.send(client, topic, message);
+      }
+    });
   }
 }
