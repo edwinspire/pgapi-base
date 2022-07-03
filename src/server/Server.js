@@ -129,7 +129,9 @@ export class Server extends EventEmitter {
     }
   }
 
+  /*
   get clients() {
     return this.socketio.sockets.sockets;
   }
+  */
 }

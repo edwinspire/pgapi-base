@@ -163,10 +163,12 @@ class Server extends EventEmitter {
       httpServer.setTimeout(rto); // Para 5 minutos
     }
   }
-
+  /*
   get clients() {
     return this.socketio.sockets.sockets;
   }
+  */
+
 
 }
 
