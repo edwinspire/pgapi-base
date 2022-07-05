@@ -3,11 +3,14 @@ const EventEmitter = require("events");
 const { MQTT_SERVER } = process.env;
 
 export class MqttPlugin extends EventEmitter {
-  constructor(topics, mqtt_server) {
+  constructor(mqtt_config) {
     super();
+
+    let { topics, mqtt_server, options } = mqtt_config;
+
     let server = mqtt_server || MQTT_SERVER;
     console.log(server);
-    this.MqttClient = mqtt.connect(server);
+    this.MqttClient = mqtt.connect(server, options);
 
     this.MqttClient.on("connect", () => {
       this.emit("connect", {});

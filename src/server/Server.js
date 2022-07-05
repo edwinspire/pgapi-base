@@ -24,6 +24,7 @@ export class Server extends EventEmitter {
     pg_listen_channel_list,
     custom_response,
     sapper,
+    mqtt_config,
   }) {
     super();
     this.credentials = credentials;
@@ -32,7 +33,11 @@ export class Server extends EventEmitter {
     this.pg_listen_channel_list = pg_listen_channel_list;
     this.WebSocket = undefined;
 
-    console.log("pg_listen_channel_list",pg_listen_channel_list);
+    if (mqtt_config) {
+      this.Mqtt = new MqttPlugin(mqtt_config);
+    }
+    
+    // console.log("pg_listen_channel_list",pg_listen_channel_list);
     /*
     if (pg_listen_channel_list && pg_listen_channel_list.length > 0) {
       new pgListen(pg_listen_channel_list).on("notification", (notify) => {
@@ -94,7 +99,6 @@ export class Server extends EventEmitter {
     if (httpServer) {
       // Se crea el servidor de websocket
       this.WebSocket = new WebSocketPlugin(httpServer);
-      this.Mqtt = new MqttPlugin();
 
       /*
       setInterval(() => {
@@ -104,7 +108,7 @@ export class Server extends EventEmitter {
 */
       // Se capturan notificaciones de postgres si se ha configurado canales para escuchar
 
-      console.log("this.pg_listen_channel_list",this.pg_listen_channel_list);
+      console.log("this.pg_listen_channel_list", this.pg_listen_channel_list);
 
       if (
         this.pg_listen_channel_list &&
