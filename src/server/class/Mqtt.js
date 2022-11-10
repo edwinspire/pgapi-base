@@ -34,7 +34,14 @@ export class MqttPlugin extends EventEmitter {
 
     this.MqttClient.on("message", (topic, message) => {
       console.log(topic, message.toString());
-      this.emit(topic, message);
+      let msg;
+      try {
+        msg = JSON.parse(message.toString());
+      } catch (error) {
+        msg = message.toString();
+      }
+
+      this.emit(topic, msg);
     });
   }
 
