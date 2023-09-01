@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { ColumnTypes, Table } from "@edwinspire/svelte-components/src";
+  import { ColumnTypes, Table } from "@edwinspire/svelte-components";
 
   let ColumnsEndPoints = {
     idbasicmenu: { hidden: true },

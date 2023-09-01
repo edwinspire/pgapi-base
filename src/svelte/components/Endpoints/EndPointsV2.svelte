@@ -3,7 +3,7 @@
   //import Table from "../../Table/Table";
   import EndpointForm from "./EndpointForm";
   import MethodForm from "./MethodForm";
-  import { ColumnTypes, Table } from "@edwinspire/svelte-components/src";
+  import { ColumnTypes, Table } from "@edwinspire/svelte-components";
   import MethodsColumn from "../Table/Cell/CellMethods.svelte";
   //import MethodsColumn from "../../pgAPI/Table/Cell/CellMethods.svelte";
 
