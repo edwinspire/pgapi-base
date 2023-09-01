@@ -71,16 +71,7 @@ class Server extends EventEmitter {
 
     if (mqtt_config) {
       this.Mqtt = new MqttPlugin(mqtt_config);
-    } // console.log("pg_listen_channel_list",pg_listen_channel_list);
-
-    /*
-    if (pg_listen_channel_list && pg_listen_channel_list.length > 0) {
-      new pgListen(pg_listen_channel_list).on("notification", (notify) => {
-        this.emit("pgNotify", notify);
-      });
     }
-    */
-
 
     this.token = new Token();
     this.token.deleteAll();
